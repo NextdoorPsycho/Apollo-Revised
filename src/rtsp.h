@@ -41,37 +41,37 @@ namespace rtsp_stream {
   };
 
   struct launch_session_t {
-    uint32_t id;
+    uint32_t id {};
 
     crypto::aes_t gcm_key;
     crypto::aes_t iv;
 
     std::string av_ping_payload;
-    uint32_t control_connect_data;
+    uint32_t control_connect_data {};
 
     std::string device_name;
     std::string unique_id;
-    crypto::PERM perm;
+    crypto::PERM perm {};
 
-    bool input_only;
-    bool host_audio;
-    int width;
-    int height;
-    int fps;
-    int gcmap;
-    int surround_info;
+    bool input_only {};
+    bool host_audio {};
+    int width {};
+    int height {};
+    int fps {};
+    int gcmap {};
+    int surround_info {};
     std::string surround_params;
-    bool enable_hdr;
-    bool enable_sops;
-    bool virtual_display;
-    bool sole_display;
-    bool multi_display;
-    uint32_t scale_factor;
+    bool enable_hdr {};
+    bool enable_sops {};
+    bool virtual_display {};
+    bool sole_display {};
+    bool multi_display {};
+    uint32_t scale_factor {};
     std::vector<requested_display_t> requested_displays;
 
     std::optional<crypto::cipher::gcm_t> rtsp_cipher;
     std::string rtsp_url_scheme;
-    uint32_t rtsp_iv_counter;
+    uint32_t rtsp_iv_counter {};
 
     std::list<crypto::command_entry_t> client_do_cmds;
     std::list<crypto::command_entry_t> client_undo_cmds;

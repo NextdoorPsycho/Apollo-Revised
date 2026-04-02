@@ -513,8 +513,8 @@ namespace proc {
     }
 
     // We should not preserve display state when using a normal virtual display.
-    // Sole-display mode needs the original layout persisted so it can be restored on disconnect.
-    if (this->virtual_display && !launch_session->sole_display) {
+    // Sole-display and multi-display need the original layout persisted so it can be restored on disconnect.
+    if (this->virtual_display && !launch_session->sole_display && !launch_session->multi_display) {
       display_device::reset_persistence();
     }
 
@@ -978,7 +978,9 @@ namespace proc {
     // Only show the Stopped notification if we actually have an app to stop
     // Since terminate() is always run when a new app has started
     if (proc::proc.get_last_run_app_name().length() > 0 && has_run) {
-      if (used_virtual_display) {
+      if (used_virtual_display && _launch_session && (_launch_session->sole_display || _launch_session->multi_display)) {
+        display_device::revert_configuration();
+      } else if (used_virtual_display) {
         display_device::reset_persistence();
       } else {
         display_device::revert_configuration();
