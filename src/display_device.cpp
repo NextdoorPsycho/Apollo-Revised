@@ -846,9 +846,13 @@ namespace display_device {
   }
 
   std::variant<failed_to_parse_tag_t, configuration_disabled_tag_t, SingleDisplayConfiguration> parse_configuration(const config::video_t &video_config, const rtsp_stream::launch_session_t &session) {
-    const auto device_prep {parse_device_prep_option(video_config)};
-    if (!device_prep) {
+    auto device_prep {parse_device_prep_option(video_config)};
+    if (!device_prep && !session.sole_display) {
       return configuration_disabled_tag_t {};
+    }
+
+    if (session.sole_display) {
+      device_prep = SingleDisplayConfiguration::DevicePreparation::EnsureOnlyDisplay;
     }
 
     SingleDisplayConfiguration config;

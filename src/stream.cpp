@@ -418,6 +418,7 @@ namespace stream {
 
     std::list<crypto::command_entry_t> do_cmds;
     std::list<crypto::command_entry_t> undo_cmds;
+    bool sole_display = false;
 
     safe::mail_raw_t::event_t<bool> shutdown_event;
     safe::signal_t controlEnd;
@@ -2068,7 +2069,7 @@ namespace stream {
 
       // If this is the last session, invoke the platform callbacks
       if (--running_sessions == 0) {
-        bool revert_display_config {config::video.dd.config_revert_on_disconnect};
+        bool revert_display_config {config::video.dd.config_revert_on_disconnect || session.sole_display};
         if (proc::proc.running()) {
           proc::proc.pause();
         } else {
@@ -2158,6 +2159,7 @@ namespace stream {
 
       session->do_cmds = std::move(launch_session.client_do_cmds);
       session->undo_cmds = std::move(launch_session.client_undo_cmds);
+      session->sole_display = launch_session.sole_display;
 
       session->config = config;
 

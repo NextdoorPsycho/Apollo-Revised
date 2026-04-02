@@ -237,6 +237,7 @@ namespace proc {
     if (
       config::video.headless_mode        // Headless mode
       || launch_session->virtual_display // User requested virtual display
+      || launch_session->sole_display    // User requested sole-display mode
       || _app.virtual_display            // App is configured to use virtual display
       || !video::allow_encoder_probing() // No active display presents
     ) {
@@ -327,18 +328,26 @@ namespace proc {
           config::video.output_name = display_device::map_display_name(this->display_name);
         } else {
           BOOST_LOG(warning) << "Virtual Display creation failed, or cannot get created display name in time!";
+          if (launch_session->sole_display) {
+            BOOST_LOG(error) << "Sole-display mode requires a working virtual display.";
+            return 503;
+          }
         }
       } else {
         // Driver isn't working so we don't need to track virtual display.
         launch_session->virtual_display = false;
+        if (launch_session->sole_display) {
+          BOOST_LOG(error) << "Sole-display mode requires the virtual display driver to be available.";
+          return 503;
+        }
       }
     }
 
     display_device::configure_display(config::video, *launch_session);
 
-    // We should not preserve display state when using virtual display.
-    // It is already handled by Windows properly.
-    if (this->virtual_display) {
+    // We should not preserve display state when using a normal virtual display.
+    // Sole-display mode needs the original layout persisted so it can be restored on disconnect.
+    if (this->virtual_display && !launch_session->sole_display) {
       display_device::reset_persistence();
     }
 
@@ -376,6 +385,7 @@ namespace proc {
     _env["SUNSHINE_CLIENT_GCMAP"] = std::to_string(launch_session->gcmap);
     _env["SUNSHINE_CLIENT_HOST_AUDIO"] = launch_session->host_audio ? "true" : "false";
     _env["SUNSHINE_CLIENT_ENABLE_SOPS"] = launch_session->enable_sops ? "true" : "false";
+    _env["SUNSHINE_CLIENT_SOLE_DISPLAY"] = launch_session->sole_display ? "true" : "false";
 
     _env["APOLLO_APP_ID"] = _app.id;
     _env["APOLLO_APP_NAME"] = _app.name;
@@ -393,6 +403,7 @@ namespace proc {
     _env["APOLLO_CLIENT_GCMAP"] = std::to_string(launch_session->gcmap);
     _env["APOLLO_CLIENT_HOST_AUDIO"] = launch_session->host_audio ? "true" : "false";
     _env["APOLLO_CLIENT_ENABLE_SOPS"] = launch_session->enable_sops ? "true" : "false";
+    _env["APOLLO_CLIENT_SOLE_DISPLAY"] = launch_session->sole_display ? "true" : "false";
 
     int channelCount = launch_session->surround_info & 65535;
     switch (channelCount) {
