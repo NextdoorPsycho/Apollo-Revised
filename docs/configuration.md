@@ -2130,13 +2130,13 @@ editing the `conf` file in a text editor. Use the examples as reference.
     <tr>
         <td>Default</td>
         <td colspan="2">@code{}
-            1
+            3
             @endcode</td>
     </tr>
     <tr>
         <td>Example</td>
         <td colspan="2">@code{}
-            nvenc_preset = 1
+            nvenc_preset = 3
             @endcode</td>
     </tr>
     <tr>
@@ -2170,6 +2170,48 @@ editing the `conf` file in a text editor. Use the examples as reference.
     </tr>
 </table>
 
+### nvenc_tune
+
+<table>
+    <tr>
+        <td>Description</td>
+        <td colspan="2">
+            NVENC tuning profile.
+            This controls how aggressively the encoder prioritizes low latency versus compression efficiency.
+            @note{This option only applies when using NVENC [encoder](#encoder).}
+        </td>
+    </tr>
+    <tr>
+        <td>Default</td>
+        <td colspan="2">@code{}
+            ll
+            @endcode</td>
+    </tr>
+    <tr>
+        <td>Example</td>
+        <td colspan="2">@code{}
+            nvenc_tune = ll
+            @endcode</td>
+    </tr>
+    <tr>
+        <td rowspan="4">Choices</td>
+        <td>hq</td>
+        <td>Highest compression efficiency, least latency-focused</td>
+    </tr>
+    <tr>
+        <td>ll</td>
+        <td>Balanced low latency</td>
+    </tr>
+    <tr>
+        <td>ull</td>
+        <td>Most aggressive latency tuning</td>
+    </tr>
+    <tr>
+        <td>lossless</td>
+        <td>Lossless mode</td>
+    </tr>
+</table>
+
 ### nvenc_twopass
 
 <table>
@@ -2186,13 +2228,13 @@ editing the `conf` file in a text editor. Use the examples as reference.
     <tr>
         <td>Default</td>
         <td colspan="2">@code{}
-            quarter_res
+            disabled
             @endcode</td>
     </tr>
     <tr>
         <td>Example</td>
         <td colspan="2">@code{}
-            nvenc_twopass = quarter_res
+            nvenc_twopass = disabled
             @endcode</td>
     </tr>
     <tr>
@@ -2207,6 +2249,31 @@ editing the `conf` file in a text editor. Use the examples as reference.
     <tr>
         <td>full_res</td>
         <td>Two passes, first pass at full resolution (slower)</td>
+    </tr>
+</table>
+
+### nvenc_weighted_prediction
+
+<table>
+    <tr>
+        <td>Description</td>
+        <td colspan="2">
+            Enable weighted prediction in NVENC.
+            This typically improves fades and other gradual brightness transitions with modest performance cost.
+            @note{This option only applies when using NVENC [encoder](#encoder).}
+        </td>
+    </tr>
+    <tr>
+        <td>Default</td>
+        <td colspan="2">@code{}
+            enabled
+            @endcode</td>
+    </tr>
+    <tr>
+        <td>Example</td>
+        <td colspan="2">@code{}
+            nvenc_weighted_prediction = enabled
+            @endcode</td>
     </tr>
 </table>
 

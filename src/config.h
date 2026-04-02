@@ -44,6 +44,7 @@ namespace config {
 
     struct {
       int preset;
+      int tuning_info;
       int multipass;
       int h264_coder;
       int aq;

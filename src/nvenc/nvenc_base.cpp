@@ -85,6 +85,36 @@ namespace {
     return "Unknown";
   }
 
+  NV_ENC_TUNING_INFO tuning_info_from_config(nvenc::nvenc_tuning_info tuning_info) {
+    switch (tuning_info) {
+      case nvenc::nvenc_tuning_info::high_quality:
+        return NV_ENC_TUNING_INFO_HIGH_QUALITY;
+      case nvenc::nvenc_tuning_info::low_latency:
+        return NV_ENC_TUNING_INFO_LOW_LATENCY;
+      case nvenc::nvenc_tuning_info::ultra_low_latency:
+        return NV_ENC_TUNING_INFO_ULTRA_LOW_LATENCY;
+      case nvenc::nvenc_tuning_info::lossless:
+        return NV_ENC_TUNING_INFO_LOSSLESS;
+    }
+
+    return NV_ENC_TUNING_INFO_LOW_LATENCY;
+  }
+
+  std::string_view tuning_info_to_string(NV_ENC_TUNING_INFO tuning_info) {
+    switch (tuning_info) {
+      case NV_ENC_TUNING_INFO_HIGH_QUALITY:
+        return "hq";
+      case NV_ENC_TUNING_INFO_LOW_LATENCY:
+        return "ll";
+      case NV_ENC_TUNING_INFO_ULTRA_LOW_LATENCY:
+        return "ull";
+      case NV_ENC_TUNING_INFO_LOSSLESS:
+        return "lossless";
+      default:
+        return "unknown";
+    }
+  }
+
 }  // namespace
 
 namespace nvenc {
@@ -214,7 +244,7 @@ namespace nvenc {
     encoder_params.rfi = get_encoder_cap(NV_ENC_CAPS_SUPPORT_REF_PIC_INVALIDATION);
 
     init_params.presetGUID = quality_preset_guid_from_number(config.quality_preset);
-    init_params.tuningInfo = NV_ENC_TUNING_INFO_ULTRA_LOW_LATENCY;
+    init_params.tuningInfo = tuning_info_from_config(config.tuning_info);
     init_params.enablePTD = 1;
     init_params.enableEncodeAsync = async_event_handle ? 1 : 0;
     init_params.enableWeightedPrediction = config.weighted_prediction && get_encoder_cap(NV_ENC_CAPS_SUPPORT_WEIGHTED_PREDICTION);
@@ -448,7 +478,7 @@ namespace nvenc {
         extra += " filler-data";
       }
 
-      BOOST_LOG(info) << "NvEnc: created encoder " << video_format_string << quality_preset_string_from_guid(init_params.presetGUID) << extra;
+      BOOST_LOG(info) << "NvEnc: created encoder " << video_format_string << quality_preset_string_from_guid(init_params.presetGUID) << ' ' << tuning_info_to_string(init_params.tuningInfo) << extra;
     }
 
     encoder_state = {};

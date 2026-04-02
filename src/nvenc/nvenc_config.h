@@ -12,21 +12,31 @@ namespace nvenc {
     full_resolution,  ///< Better overall statistics, slower and uses more extra vram
   };
 
+  enum class nvenc_tuning_info {
+    high_quality,
+    low_latency,
+    ultra_low_latency,
+    lossless,
+  };
+
   /**
    * @brief NVENC encoder configuration.
    */
   struct nvenc_config {
     // Quality preset from 1 to 7, higher is slower
-    int quality_preset = 1;
+    int quality_preset = 3;
+
+    // Encoder tuning target. Low latency is a better default balance than ultra low latency on modern GPUs.
+    nvenc_tuning_info tuning_info = nvenc_tuning_info::low_latency;
 
     // Use optional preliminary pass for better motion vectors, bitrate distribution and stricter VBV(HRD), uses CUDA cores
-    nvenc_two_pass two_pass = nvenc_two_pass::quarter_resolution;
+    nvenc_two_pass two_pass = nvenc_two_pass::disabled;
 
     // Percentage increase of VBV/HRD from the default single frame, allows low-latency variable bitrate
     int vbv_percentage_increase = 0;
 
     // Improves fades compression, uses CUDA cores
-    bool weighted_prediction = false;
+    bool weighted_prediction = true;
 
     // Allocate more bitrate to flat regions since they're visually more perceptible, uses CUDA cores
     bool adaptive_quantization = false;

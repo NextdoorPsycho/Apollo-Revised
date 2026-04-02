@@ -63,7 +63,39 @@ namespace config {
         return nvenc::nvenc_two_pass::full_resolution;
       }
       BOOST_LOG(warning) << "config: unknown nvenc_twopass value: " << preset;
-      return nvenc::nvenc_two_pass::quarter_resolution;
+      return nvenc::nvenc_two_pass::disabled;
+    }
+
+    int tuning_info_to_legacy(nvenc::nvenc_tuning_info tuning_info) {
+      switch (tuning_info) {
+        case nvenc::nvenc_tuning_info::high_quality:
+          return 1;
+        case nvenc::nvenc_tuning_info::low_latency:
+          return 2;
+        case nvenc::nvenc_tuning_info::ultra_low_latency:
+          return 3;
+        case nvenc::nvenc_tuning_info::lossless:
+          return 4;
+      }
+
+      return 2;
+    }
+
+    nvenc::nvenc_tuning_info tuning_info_from_view(const ::std::string_view &preset) {
+      if (preset == "hq") {
+        return nvenc::nvenc_tuning_info::high_quality;
+      }
+      if (preset == "ll") {
+        return nvenc::nvenc_tuning_info::low_latency;
+      }
+      if (preset == "ull") {
+        return nvenc::nvenc_tuning_info::ultra_low_latency;
+      }
+      if (preset == "lossless") {
+        return nvenc::nvenc_tuning_info::lossless;
+      }
+      BOOST_LOG(warning) << "config: unknown nvenc_tune value: " << preset;
+      return nvenc::nvenc_tuning_info::low_latency;
     }
 
   }  // namespace nv
@@ -457,7 +489,14 @@ namespace config {
     true,  // nv_realtime_hags
     true,  // nv_opengl_vulkan_on_dxgi
     true,  // nv_sunshine_high_power_mode
-    {},  // nv_legacy
+    {
+      14,  // preset
+      2,  // tuning_info (NV_ENC_TUNING_INFO_LOW_LATENCY)
+      0,  // multipass (NV_ENC_MULTI_PASS_DISABLED)
+      1,  // h264_coder (NV_ENC_H264_ENTROPY_CODING_MODE_CABAC)
+      0,  // aq
+      0,  // vbv_percentage_increase
+    },  // nv_legacy
 
     {
       qsv::medium,  // preset
@@ -1118,7 +1157,9 @@ namespace config {
     string_f(vars, "sw_tune", video.sw.sw_tune);
 
     int_between_f(vars, "nvenc_preset", video.nv.quality_preset, {1, 7});
+    generic_f(vars, "nvenc_tune", video.nv.tuning_info, nv::tuning_info_from_view);
     int_between_f(vars, "nvenc_vbv_increase", video.nv.vbv_percentage_increase, {0, 400});
+    bool_f(vars, "nvenc_weighted_prediction", video.nv.weighted_prediction);
     bool_f(vars, "nvenc_spatial_aq", video.nv.adaptive_quantization);
     generic_f(vars, "nvenc_twopass", video.nv.two_pass, nv::twopass_from_view);
     bool_f(vars, "nvenc_h264_cavlc", video.nv.h264_cavlc);
@@ -1129,6 +1170,7 @@ namespace config {
 
 #if !defined(__ANDROID__) && !defined(__APPLE__)
     video.nv_legacy.preset = video.nv.quality_preset + 11;
+    video.nv_legacy.tuning_info = nv::tuning_info_to_legacy(video.nv.tuning_info);
     video.nv_legacy.multipass = video.nv.two_pass == nvenc::nvenc_two_pass::quarter_resolution ? NV_ENC_TWO_PASS_QUARTER_RESOLUTION :
                                 video.nv.two_pass == nvenc::nvenc_two_pass::full_resolution    ? NV_ENC_TWO_PASS_FULL_RESOLUTION :
                                                                                                  NV_ENC_MULTI_PASS_DISABLED;
