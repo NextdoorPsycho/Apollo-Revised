@@ -63,6 +63,27 @@ namespace proc {
 #ifdef _WIN32
   VDISPLAY::DRIVER_STATUS vDisplayDriverStatus = VDISPLAY::DRIVER_STATUS::UNKNOWN;
 
+  namespace {
+    uuid_util::uuid_t derive_display_uuid(uuid_util::uuid_t base_uuid, const std::size_t display_index) {
+      const auto salt = static_cast<std::uint32_t>(0x9E3779B9u * (display_index + 1));
+      base_uuid.b32[display_index % 4] ^= salt;
+      base_uuid.b32[(display_index + 1) % 4] ^= (salt >> 1);
+      return base_uuid;
+    }
+
+    int normalize_target_fps(int fps) {
+      if (fps <= 0) {
+        return 60000;
+      }
+
+      if (fps < 1000) {
+        return fps * 1000;
+      }
+
+      return fps;
+    }
+  }  // namespace
+
   void onVDisplayWatchdogFailed() {
     vDisplayDriverStatus = VDISPLAY::DRIVER_STATUS::WATCHDOG_FAILED;
     VDISPLAY::closeVDisplayDevice();
@@ -239,6 +260,7 @@ namespace proc {
       config::video.headless_mode        // Headless mode
       || launch_session->virtual_display // User requested virtual display
       || launch_session->sole_display    // User requested sole-display mode
+      || launch_session->multi_display   // User requested multi-display mode
       || _app.virtual_display            // App is configured to use virtual display
       || !video::allow_encoder_probing() // No active display presents
     ) {
@@ -278,95 +300,156 @@ namespace proc {
           device_uuid = uuid_util::uuid_t::parse(launch_session->unique_id);
         }
 
-        memcpy(&launch_session->display_guid, &device_uuid, sizeof(GUID));
+        if (launch_session->multi_display) {
+          std::vector<VDISPLAY::display_layout_t> layouts;
+          layouts.reserve(launch_session->requested_displays.size());
 
-        int target_fps = launch_session->fps ? launch_session->fps : 60000;
+          for (std::size_t display_index = 0; display_index < launch_session->requested_displays.size(); ++display_index) {
+            auto &requested_display = launch_session->requested_displays[display_index];
+            auto requested_uuid = derive_display_uuid(device_uuid, display_index);
+            requested_display.display_guid = *reinterpret_cast<GUID *>(&requested_uuid);
 
-        if (target_fps < 1000) {
-          target_fps *= 1000;
-        }
-
-        if (config::video.double_refreshrate) {
-          target_fps *= 2;
-        }
-
-        std::wstring vdisplayName = VDISPLAY::createVirtualDisplay(
-          device_uuid_str.c_str(),
-          device_name.c_str(),
-          render_width,
-          render_height,
-          target_fps,
-          launch_session->display_guid
-        );
-
-        // No matter we get the display name or not, the virtual display might still be created.
-        // We need to track it properly to remove the display when the session terminates.
-        launch_session->virtual_display = true;
-
-        if (!vdisplayName.empty()) {
-          BOOST_LOG(info) << "Virtual Display created at " << vdisplayName;
-
-          // Don't change display settings when no params are given
-          if (launch_session->width && launch_session->height && launch_session->fps) {
-            // Apply display settings
-            VDISPLAY::changeDisplaySettings(vdisplayName.c_str(), render_width, render_height, target_fps);
-          }
-
-          // Check the ISOLATED DISPLAY configuration setting and rearrange the displays
-          if (config::video.isolated_virtual_display_option == true) {
-            // Apply the isolated display settings
-            VDISPLAY::changeDisplaySettings2(vdisplayName.c_str(), render_width, render_height, target_fps, true);
-          }
-
-          // Set virtual_display to true when everything went fine
-          this->virtual_display = true;
-          this->display_name = platf::to_utf8(vdisplayName);
-
-          // When using virtual display, we don't care which display user configured to use.
-          // So we always set output_name to the newly created virtual display as a workaround for
-          // empty name when probing graphics cards. The display-device layer requires a stable
-          // device id, and Sole-Display depends on this mapping succeeding before we continue.
-          std::string mapped_display_id;
-          auto retry_interval = 100ms;
-          while (mapped_display_id.empty()) {
-            mapped_display_id = display_device::map_display_name(this->display_name);
-            if (!mapped_display_id.empty()) {
-              break;
+            int display_fps = normalize_target_fps(requested_display.fps);
+            if (config::video.double_refreshrate) {
+              display_fps *= 2;
             }
 
-            if (!launch_session->sole_display && retry_interval > 800ms) {
-              break;
-            }
+            std::string requested_uuid_str = requested_uuid.string();
+            std::wstring created_display_name = VDISPLAY::createVirtualDisplay(
+              requested_uuid_str.c_str(),
+              device_name.c_str(),
+              requested_display.width,
+              requested_display.height,
+              display_fps,
+              requested_display.display_guid
+            );
 
-            if (retry_interval > 2s) {
-              break;
-            }
-
-            std::this_thread::sleep_for(retry_interval);
-            retry_interval *= 2;
-          }
-
-          config::video.output_name = mapped_display_id;
-          if (config::video.output_name.empty()) {
-            BOOST_LOG(warning) << "Unable to map virtual display [" << this->display_name << "] to a display-device id in time.";
-            if (launch_session->sole_display) {
-              BOOST_LOG(error) << "Sole-display mode requires the virtual display to be addressable by the display-device manager.";
+            launch_session->virtual_display = true;
+            if (created_display_name.empty()) {
+              BOOST_LOG(error) << "Failed to create virtual display for multi-display index [" << display_index << "]";
               return 503;
             }
-          } else {
-            BOOST_LOG(info) << "Mapped virtual display [" << this->display_name << "] to display-device id [" << config::video.output_name << "].";
+
+            VDISPLAY::changeDisplaySettings(
+              created_display_name.c_str(),
+              requested_display.width,
+              requested_display.height,
+              display_fps
+            );
+
+            layouts.emplace_back(VDISPLAY::display_layout_t {
+              created_display_name,
+              requested_display.offset_x,
+              requested_display.offset_y,
+              requested_display.width,
+              requested_display.height,
+              requested_display.primary
+            });
+
+            this->display_names.emplace_back(platf::to_utf8(created_display_name));
+          }
+
+          if (VDISPLAY::applyDisplayLayout(layouts) != ERROR_SUCCESS) {
+            BOOST_LOG(error) << "Failed to apply requested multi-display layout";
+            return 503;
+          }
+
+          this->virtual_display = true;
+          if (!this->display_names.empty()) {
+            this->display_name = this->display_names.front();
+            config::video.output_name = display_device::map_display_name(this->display_name);
+            if (!config::video.output_name.empty()) {
+              BOOST_LOG(info) << "Mapped primary multi-display virtual output to display-device id [" << config::video.output_name << "].";
+            }
           }
         } else {
-          BOOST_LOG(warning) << "Virtual Display creation failed, or cannot get created display name in time!";
-          if (launch_session->sole_display) {
-            BOOST_LOG(error) << "Sole-display mode requires a working virtual display.";
-            return 503;
+          memcpy(&launch_session->display_guid, &device_uuid, sizeof(GUID));
+
+          int target_fps = normalize_target_fps(launch_session->fps);
+
+          if (config::video.double_refreshrate) {
+            target_fps *= 2;
+          }
+
+          std::wstring vdisplayName = VDISPLAY::createVirtualDisplay(
+            device_uuid_str.c_str(),
+            device_name.c_str(),
+            render_width,
+            render_height,
+            target_fps,
+            launch_session->display_guid
+          );
+
+          // No matter we get the display name or not, the virtual display might still be created.
+          // We need to track it properly to remove the display when the session terminates.
+          launch_session->virtual_display = true;
+
+          if (!vdisplayName.empty()) {
+            BOOST_LOG(info) << "Virtual Display created at " << vdisplayName;
+
+            // Don't change display settings when no params are given
+            if (launch_session->width && launch_session->height && launch_session->fps) {
+              // Apply display settings
+              VDISPLAY::changeDisplaySettings(vdisplayName.c_str(), render_width, render_height, target_fps);
+            }
+
+            // Check the ISOLATED DISPLAY configuration setting and rearrange the displays
+            if (config::video.isolated_virtual_display_option == true) {
+              // Apply the isolated display settings
+              VDISPLAY::changeDisplaySettings2(vdisplayName.c_str(), render_width, render_height, target_fps, true);
+            }
+
+            // Set virtual_display to true when everything went fine
+            this->virtual_display = true;
+            this->display_name = platf::to_utf8(vdisplayName);
+            this->display_names = {this->display_name};
+
+            // When using virtual display, we don't care which display user configured to use.
+            // So we always set output_name to the newly created virtual display as a workaround for
+            // empty name when probing graphics cards. The display-device layer requires a stable
+            // device id, and Sole-Display depends on this mapping succeeding before we continue.
+            std::string mapped_display_id;
+            auto retry_interval = 100ms;
+            while (mapped_display_id.empty()) {
+              mapped_display_id = display_device::map_display_name(this->display_name);
+              if (!mapped_display_id.empty()) {
+                break;
+              }
+
+              if (!launch_session->sole_display && retry_interval > 800ms) {
+                break;
+              }
+
+              if (retry_interval > 2s) {
+                break;
+              }
+
+              std::this_thread::sleep_for(retry_interval);
+              retry_interval *= 2;
+            }
+
+            config::video.output_name = mapped_display_id;
+            if (config::video.output_name.empty()) {
+              BOOST_LOG(warning) << "Unable to map virtual display [" << this->display_name << "] to a display-device id in time.";
+              if (launch_session->sole_display) {
+                BOOST_LOG(error) << "Sole-display mode requires the virtual display to be addressable by the display-device manager.";
+                return 503;
+              }
+            } else {
+              BOOST_LOG(info) << "Mapped virtual display [" << this->display_name << "] to display-device id [" << config::video.output_name << "].";
+            }
+          } else {
+            BOOST_LOG(warning) << "Virtual Display creation failed, or cannot get created display name in time!";
+            if (launch_session->sole_display) {
+              BOOST_LOG(error) << "Sole-display mode requires a working virtual display.";
+              return 503;
+            }
           }
         }
       } else {
         // Driver isn't working so we don't need to track virtual display.
         launch_session->virtual_display = false;
-        if (launch_session->sole_display) {
+        if (launch_session->sole_display || launch_session->multi_display) {
           BOOST_LOG(error) << "Sole-display mode requires the virtual display driver to be available.";
           return 503;
         }
@@ -488,6 +571,22 @@ namespace proc {
     _env["APOLLO_CLIENT_HOST_AUDIO"] = launch_session->host_audio ? "true" : "false";
     _env["APOLLO_CLIENT_ENABLE_SOPS"] = launch_session->enable_sops ? "true" : "false";
     _env["APOLLO_CLIENT_SOLE_DISPLAY"] = launch_session->sole_display ? "true" : "false";
+    _env["APOLLO_CLIENT_MULTI_DISPLAY"] = launch_session->multi_display ? "true" : "false";
+    if (launch_session->multi_display) {
+      nlohmann::json client_displays = nlohmann::json::array();
+      for (const auto &display : launch_session->requested_displays) {
+        client_displays.push_back({
+          {"id", display.client_id},
+          {"width", display.width},
+          {"height", display.height},
+          {"fps", display.fps},
+          {"x", display.offset_x},
+          {"y", display.offset_y},
+          {"primary", display.primary}
+        });
+      }
+      _env["APOLLO_CLIENT_DISPLAYS"] = client_displays.dump();
+    }
 
     int channelCount = launch_session->surround_info & 65535;
     switch (channelCount) {
@@ -853,7 +952,21 @@ namespace proc {
 
     bool used_virtual_display = vDisplayDriverStatus == VDISPLAY::DRIVER_STATUS::OK && _launch_session && _launch_session->virtual_display;
     if (used_virtual_display) {
-      if (VDISPLAY::removeVirtualDisplay(_launch_session->display_guid)) {
+      bool any_removed = false;
+
+      if (_launch_session->multi_display && !_launch_session->requested_displays.empty()) {
+        for (auto it = _launch_session->requested_displays.rbegin(); it != _launch_session->requested_displays.rend(); ++it) {
+          if (VDISPLAY::removeVirtualDisplay(it->display_guid)) {
+            any_removed = true;
+          } else {
+            BOOST_LOG(warning) << "Virtual Display remove failed for multi-display output [" << it->client_id << "]";
+          }
+        }
+      } else if (VDISPLAY::removeVirtualDisplay(_launch_session->display_guid)) {
+        any_removed = true;
+      }
+
+      if (any_removed) {
         BOOST_LOG(info) << "Virtual Display removed successfully";
       } else if (this->virtual_display) {
         BOOST_LOG(warning) << "Virtual Display remove failed";
@@ -893,6 +1006,7 @@ namespace proc {
     _app_name.clear();
     _app = {};
     display_name.clear();
+    display_names.clear();
     initial_display.clear();
     mode_changed_display.clear();
     _launch_session.reset();

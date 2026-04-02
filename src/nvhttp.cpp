@@ -6,6 +6,7 @@
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 
 // standard includes
+#include <algorithm>
 #include <filesystem>
 #include <format>
 #include <string>
@@ -64,6 +65,48 @@ namespace nvhttp {
   static std::string otp_passphrase;
   static std::string otp_device_name;
   static std::chrono::time_point<std::chrono::steady_clock> otp_creation_time;
+
+  namespace {
+    std::vector<rtsp_stream::requested_display_t> parse_requested_displays(const std::string &encoded_displays) {
+      std::vector<rtsp_stream::requested_display_t> displays;
+      if (encoded_displays.empty()) {
+        return displays;
+      }
+
+      auto parsed = nlohmann::json::parse(encoded_displays);
+      if (!parsed.is_array()) {
+        throw std::invalid_argument("clientDisplays must be a JSON array");
+      }
+
+      displays.reserve(parsed.size());
+      for (const auto &entry : parsed) {
+        if (!entry.is_object()) {
+          throw std::invalid_argument("clientDisplays entries must be objects");
+        }
+
+        rtsp_stream::requested_display_t display;
+        display.client_id = entry.value("id", "");
+        display.width = entry.value("width", 0);
+        display.height = entry.value("height", 0);
+        display.fps = entry.value("fps", 0);
+        display.offset_x = entry.value("x", 0);
+        display.offset_y = entry.value("y", 0);
+        display.primary = entry.value("primary", false);
+
+        if (display.width <= 0 || display.height <= 0 || display.fps <= 0) {
+          throw std::invalid_argument("clientDisplays entries must include positive width, height, and fps values");
+        }
+
+        if (display.fps < 1000) {
+          display.fps *= 1000;
+        }
+
+        displays.emplace_back(std::move(display));
+      }
+
+      return displays;
+    }
+  }  // namespace
 
   class SunshineHTTPSServer: public SimpleWeb::ServerBase<SunshineHTTPS> {
   public:
@@ -460,8 +503,39 @@ namespace nvhttp {
     launch_session->gcmap = util::from_view(get_arg(args, "gcmap", "0"));
     launch_session->enable_hdr = util::from_view(get_arg(args, "hdrMode", "0"));
     launch_session->sole_display = util::from_view(get_arg(args, "soleDisplay", "0"));
+    launch_session->multi_display = util::from_view(get_arg(args, "multiDisplay", "0"));
     launch_session->virtual_display = launch_session->sole_display || util::from_view(get_arg(args, "virtualDisplay", "0")) || named_cert_p->always_use_virtual_display;
     launch_session->scale_factor = util::from_view(get_arg(args, "scaleFactor", "100"));
+
+    if (launch_session->multi_display) {
+      launch_session->requested_displays = parse_requested_displays(get_arg(args, "clientDisplays", ""));
+      if (launch_session->requested_displays.empty()) {
+        throw std::invalid_argument("multiDisplay launch requires at least one client display");
+      }
+
+      const auto *primary_display = &launch_session->requested_displays.front();
+      int min_x = primary_display->offset_x;
+      int min_y = primary_display->offset_y;
+      int max_x = primary_display->offset_x + primary_display->width;
+      int max_y = primary_display->offset_y + primary_display->height;
+
+      for (const auto &display : launch_session->requested_displays) {
+        if (display.primary) {
+          primary_display = &display;
+        }
+
+        min_x = std::min(min_x, display.offset_x);
+        min_y = std::min(min_y, display.offset_y);
+        max_x = std::max(max_x, display.offset_x + display.width);
+        max_y = std::max(max_y, display.offset_y + display.height);
+      }
+
+      launch_session->width = max_x - min_x;
+      launch_session->height = max_y - min_y;
+      launch_session->fps = primary_display->fps;
+      launch_session->virtual_display = true;
+      launch_session->sole_display = false;
+    }
 
     launch_session->client_do_cmds = named_cert_p->do_cmds;
     launch_session->client_undo_cmds = named_cert_p->undo_cmds;
@@ -933,10 +1007,13 @@ namespace nvhttp {
 
     #ifdef _WIN32
       tree.put("root.VirtualDisplayCapable", true);
+      tree.put("root.MultiDisplayCapable", true);
       if (!!(named_cert_p->perm & PERM::_all_actions)) {
         tree.put("root.VirtualDisplayDriverReady", proc::vDisplayDriverStatus == VDISPLAY::DRIVER_STATUS::OK);
+        tree.put("root.MultiDisplayDriverReady", proc::vDisplayDriverStatus == VDISPLAY::DRIVER_STATUS::OK);
       } else {
         tree.put("root.VirtualDisplayDriverReady", true);
+        tree.put("root.MultiDisplayDriverReady", true);
       }
     #endif
     } else {

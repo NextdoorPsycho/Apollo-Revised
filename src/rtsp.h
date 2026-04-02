@@ -8,6 +8,7 @@
 #include <atomic>
 #include <memory>
 #include <list>
+#include <vector>
 
 // local includes
 #include "crypto.h"
@@ -24,6 +25,20 @@ namespace stream {
 
 namespace rtsp_stream {
   constexpr auto RTSP_SETUP_PORT = 21;
+
+  struct requested_display_t {
+    std::string client_id;
+    int width {};
+    int height {};
+    int fps {};
+    int offset_x {};
+    int offset_y {};
+    bool primary {};
+
+  #ifdef _WIN32
+    GUID display_guid {};
+  #endif
+  };
 
   struct launch_session_t {
     uint32_t id;
@@ -50,7 +65,9 @@ namespace rtsp_stream {
     bool enable_sops;
     bool virtual_display;
     bool sole_display;
+    bool multi_display;
     uint32_t scale_factor;
+    std::vector<requested_display_t> requested_displays;
 
     std::optional<crypto::cipher::gcm_t> rtsp_cipher;
     std::string rtsp_url_scheme;

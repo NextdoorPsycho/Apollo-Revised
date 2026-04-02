@@ -15,6 +15,7 @@
 // standard includes
 #include <optional>
 #include <unordered_map>
+#include <vector>
 
 // lib includes
 #include <boost/process/v1/child.hpp>
@@ -105,6 +106,7 @@ namespace proc {
     KITTY_DEFAULT_CONSTR_MOVE_THROW(proc_t)
 
     std::string display_name;
+    std::vector<std::string> display_names;
     std::string initial_display;
     std::string mode_changed_display;
     bool initial_hdr = false;

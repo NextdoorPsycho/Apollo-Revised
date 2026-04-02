@@ -701,6 +701,101 @@ bool removeVirtualDisplay(const GUID& guid) {
 	}
 }
 
+LONG applyDisplayLayout(const std::vector<display_layout_t>& layouts) {
+	if (layouts.empty()) {
+		return ERROR_INVALID_PARAMETER;
+	}
+
+	UINT32 pathCount = 0;
+	UINT32 modeCount = 0;
+	if (GetDisplayConfigBufferSizes(QDC_ONLY_ACTIVE_PATHS, &pathCount, &modeCount)) {
+		wprintf(L"[SUDOVDA] Failed to query display configuration size.\n");
+		return ERROR_INVALID_PARAMETER;
+	}
+
+	std::vector<DISPLAYCONFIG_PATH_INFO> pathArray(pathCount);
+	std::vector<DISPLAYCONFIG_MODE_INFO> modeArray(modeCount);
+	if (QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, &pathCount, pathArray.data(), &modeCount, modeArray.data(), nullptr) != ERROR_SUCCESS) {
+		wprintf(L"[SUDOVDA] Failed to query display configuration.\n");
+		return ERROR_INVALID_PARAMETER;
+	}
+
+	std::wstring primaryDeviceName;
+
+	for (const auto& layout : layouts) {
+		bool foundDevice = false;
+
+		for (UINT32 i = 0; i < pathCount; i++) {
+			DISPLAYCONFIG_SOURCE_DEVICE_NAME sourceName = {};
+			sourceName.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
+			sourceName.header.size = sizeof(sourceName);
+			sourceName.header.adapterId = pathArray[i].sourceInfo.adapterId;
+			sourceName.header.id = pathArray[i].sourceInfo.id;
+
+			if (DisplayConfigGetDeviceInfo(&sourceName.header) != ERROR_SUCCESS) {
+				continue;
+			}
+
+			if (std::wstring_view(sourceName.viewGdiDeviceName) != std::wstring_view(layout.device_name)) {
+				continue;
+			}
+
+			for (UINT32 j = 0; j < modeCount; j++) {
+				if (
+					modeArray[j].infoType == DISPLAYCONFIG_MODE_INFO_TYPE_SOURCE &&
+					modeArray[j].adapterId.HighPart == pathArray[i].sourceInfo.adapterId.HighPart &&
+					modeArray[j].adapterId.LowPart == pathArray[i].sourceInfo.adapterId.LowPart &&
+					modeArray[j].id == pathArray[i].sourceInfo.id
+				) {
+					modeArray[j].sourceMode.position.x = layout.x;
+					modeArray[j].sourceMode.position.y = layout.y;
+					if (layout.width > 0) {
+						modeArray[j].sourceMode.width = layout.width;
+					}
+					if (layout.height > 0) {
+						modeArray[j].sourceMode.height = layout.height;
+					}
+
+					foundDevice = true;
+					break;
+				}
+			}
+
+			if (foundDevice) {
+				if (layout.primary) {
+					primaryDeviceName = layout.device_name;
+				}
+				break;
+			}
+		}
+
+		if (!foundDevice) {
+			wprintf(L"[SUDOVDA] Failed to find device for layout: %ls\n", layout.device_name.c_str());
+		}
+	}
+
+	LONG status = SetDisplayConfig(
+		pathCount,
+		pathArray.data(),
+		modeCount,
+		modeArray.data(),
+		SDC_APPLY
+		| SDC_USE_SUPPLIED_DISPLAY_CONFIG
+		| SDC_SAVE_TO_DATABASE
+	);
+
+	if (status != ERROR_SUCCESS) {
+		wprintf(L"[SUDOVDA] Failed to apply display layout.\n");
+		return status;
+	}
+
+	if (!primaryDeviceName.empty()) {
+		setPrimaryDisplay(primaryDeviceName.c_str());
+	}
+
+	return ERROR_SUCCESS;
+}
+
 // START ISOLATED DISPLAY METHODS
 // Shows the coordinates/height/width for the displays in the vector structure
 std::string printAllDisplays(std::vector< struct positionwidthheight*> displays) {

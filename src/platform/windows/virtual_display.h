@@ -12,6 +12,15 @@
 #include <sudovda/sudovda.h>
 
 namespace VDISPLAY {
+	struct display_layout_t {
+		std::wstring device_name;
+		int x {};
+		int y {};
+		int width {};
+		int height {};
+		bool primary {};
+	};
+
 	enum class DRIVER_STATUS {
 		UNKNOWN              = 1,
 		OK                   = 0,
@@ -43,6 +52,7 @@ namespace VDISPLAY {
 		const GUID& guid
 	);
 	bool removeVirtualDisplay(const GUID& guid);
+	LONG applyDisplayLayout(const std::vector<display_layout_t>& layouts);
 
 	std::vector<std::wstring> matchDisplay(std::wstring sMatch);
 }
