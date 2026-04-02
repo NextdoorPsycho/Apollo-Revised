@@ -456,7 +456,9 @@ namespace proc {
       }
     }
 
-    display_device::configure_display(config::video, *launch_session);
+    if (!launch_session->multi_display) {
+      display_device::configure_display(config::video, *launch_session);
+    }
 
     if (launch_session->sole_display) {
       const auto verify_only_target_active = [&](const std::string &target_device_id) {
