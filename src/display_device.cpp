@@ -853,6 +853,10 @@ namespace display_device {
 
     if (session.sole_display) {
       device_prep = SingleDisplayConfiguration::DevicePreparation::EnsureOnlyDisplay;
+      if (video_config.output_name.empty()) {
+        BOOST_LOG(error) << "Sole-display mode requires a resolved target display device id, but none is available.";
+        return failed_to_parse_tag_t {};
+      }
     }
 
     SingleDisplayConfiguration config;

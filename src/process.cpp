@@ -9,6 +9,7 @@
 #endif
 // standard includes
 #include <filesystem>
+#include <sstream>
 #include <string>
 #include <thread>
 #include <vector>
@@ -323,9 +324,38 @@ namespace proc {
 
           // When using virtual display, we don't care which display user configured to use.
           // So we always set output_name to the newly created virtual display as a workaround for
-          // empty name when probing graphics cards.
+          // empty name when probing graphics cards. The display-device layer requires a stable
+          // device id, and Sole-Display depends on this mapping succeeding before we continue.
+          std::string mapped_display_id;
+          auto retry_interval = 100ms;
+          while (mapped_display_id.empty()) {
+            mapped_display_id = display_device::map_display_name(this->display_name);
+            if (!mapped_display_id.empty()) {
+              break;
+            }
 
-          config::video.output_name = display_device::map_display_name(this->display_name);
+            if (!launch_session->sole_display && retry_interval > 800ms) {
+              break;
+            }
+
+            if (retry_interval > 2s) {
+              break;
+            }
+
+            std::this_thread::sleep_for(retry_interval);
+            retry_interval *= 2;
+          }
+
+          config::video.output_name = mapped_display_id;
+          if (config::video.output_name.empty()) {
+            BOOST_LOG(warning) << "Unable to map virtual display [" << this->display_name << "] to a display-device id in time.";
+            if (launch_session->sole_display) {
+              BOOST_LOG(error) << "Sole-display mode requires the virtual display to be addressable by the display-device manager.";
+              return 503;
+            }
+          } else {
+            BOOST_LOG(info) << "Mapped virtual display [" << this->display_name << "] to display-device id [" << config::video.output_name << "].";
+          }
         } else {
           BOOST_LOG(warning) << "Virtual Display creation failed, or cannot get created display name in time!";
           if (launch_session->sole_display) {
@@ -344,6 +374,60 @@ namespace proc {
     }
 
     display_device::configure_display(config::video, *launch_session);
+
+    if (launch_session->sole_display) {
+      const auto verify_only_target_active = [&](const std::string &target_device_id) {
+        const auto devices = display_device::enumerate_devices();
+        std::vector<std::string> active_device_ids;
+        active_device_ids.reserve(devices.size());
+
+        for (const auto &device : devices) {
+          if (device.m_info) {
+            active_device_ids.emplace_back(device.m_device_id);
+          }
+        }
+
+        const bool success = active_device_ids.size() == 1 && active_device_ids.front() == target_device_id;
+        if (!success) {
+          std::ostringstream active_summary;
+          for (std::size_t i = 0; i < devices.size(); ++i) {
+            const auto &device = devices[i];
+            if (i != 0) {
+              active_summary << "; ";
+            }
+
+            active_summary << device.m_device_id << " [" << device.m_display_name << "] active=" << (device.m_info.has_value() ? "true" : "false");
+          }
+
+          BOOST_LOG(debug) << "Sole-display verification pending. Expected only [" << target_device_id << "] active. Enumerated devices: " << active_summary.str();
+        }
+
+        return success;
+      };
+
+      auto retry_interval = 100ms;
+      bool sole_display_verified = false;
+      while (!sole_display_verified) {
+        sole_display_verified = verify_only_target_active(config::video.output_name);
+        if (sole_display_verified) {
+          BOOST_LOG(info) << "Sole-display verification succeeded for target display-device id [" << config::video.output_name << "].";
+          break;
+        }
+
+        if (retry_interval > 3200ms) {
+          break;
+        }
+
+        std::this_thread::sleep_for(retry_interval);
+        retry_interval *= 2;
+      }
+
+      if (!sole_display_verified) {
+        BOOST_LOG(error) << "Sole-display mode failed verification. The virtual display was not the only active display.";
+        display_device::revert_configuration();
+        return 503;
+      }
+    }
 
     // We should not preserve display state when using a normal virtual display.
     // Sole-display mode needs the original layout persisted so it can be restored on disconnect.
