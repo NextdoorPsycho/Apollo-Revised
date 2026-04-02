@@ -18,6 +18,8 @@
 #include "main.h"
 #include "nvhttp.h"
 #include "process.h"
+#include "rtsp.h"
+#include "stream.h"
 #include "system_tray.h"
 #include "upnp.h"
 #include "uuid.h"
@@ -297,6 +299,26 @@ int main(int argc, char *argv[]) {
 
   // Create signal handler after logging has been initialized
   auto shutdown_event = mail::man->event<bool>(mail::shutdown);
+  std::thread display_restore_watchdog([shutdown_event]() {
+    while (!shutdown_event->peek()) {
+      std::this_thread::sleep_for(5s);
+
+      if (shutdown_event->peek()) {
+        break;
+      }
+
+      if (stream::session::active_session_count() == 0 && rtsp_stream::session_count() == 0) {
+        BOOST_LOG(debug) << "Display restore watchdog detected no active Apollo sessions; ensuring displays are restored."sv;
+        display_device::revert_configuration();
+      }
+    }
+  });
+  auto display_restore_watchdog_guard = util::fail_guard([&]() {
+    if (display_restore_watchdog.joinable()) {
+      display_restore_watchdog.join();
+    }
+  });
+
   on_signal(SIGINT, [&force_shutdown, &display_device_deinit_guard, shutdown_event]() {
     BOOST_LOG(info) << "Interrupt handler called"sv;
 
