@@ -2122,8 +2122,8 @@ editing the `conf` file in a text editor. Use the examples as reference.
         <td colspan="2">
             NVENC encoder performance preset.
             Higher numbers improve compression (quality at given bitrate) at the cost of increased encoding latency.
-            Recommended to change only when limited by network or decoder, otherwise similar effect can be accomplished
-            by increasing bitrate.
+            P3 is the balanced default. P6 and P7 are niche settings for bitrate-constrained streams and are usually a
+            worse tradeoff than increasing bitrate.
             @note{This option only applies when using NVENC [encoder](#encoder).}
         </td>
     </tr>
@@ -2219,9 +2219,9 @@ editing the `conf` file in a text editor. Use the examples as reference.
         <td>Description</td>
         <td colspan="2">
             Enable two-pass mode in NVENC encoder.
-            This allows to detect more motion vectors, better distribute bitrate across the frame and more strictly
-            adhere to bitrate limits. Disabling it is not recommended since this can lead to occasional bitrate
-            overshoot and subsequent packet loss.
+            This allows Apollo to detect more motion vectors and distribute bitrate more effectively across the frame,
+            but it increases encoder cost. Leave it disabled unless you are intentionally trading performance and
+            latency for better bitrate efficiency.
             @note{This option only applies when using NVENC [encoder](#encoder).}
         </td>
     </tr>
@@ -2240,15 +2240,15 @@ editing the `conf` file in a text editor. Use the examples as reference.
     <tr>
         <td rowspan="3">Choices</td>
         <td>disabled</td>
-        <td>One pass (fastest)</td>
+        <td>One pass (balanced default)</td>
     </tr>
     <tr>
         <td>quarter_res</td>
-        <td>Two passes, first pass at quarter resolution (faster)</td>
+        <td>Two passes, first pass at quarter resolution (slower)</td>
     </tr>
     <tr>
         <td>full_res</td>
-        <td>Two passes, first pass at full resolution (slower)</td>
+        <td>Two passes, first pass at full resolution (slowest, expert-only)</td>
     </tr>
 </table>
 
@@ -2259,7 +2259,8 @@ editing the `conf` file in a text editor. Use the examples as reference.
         <td>Description</td>
         <td colspan="2">
             Enable weighted prediction in NVENC.
-            This typically improves fades and other gradual brightness transitions with modest performance cost.
+            This typically improves fades and other gradual brightness transitions with modest performance cost and is
+            recommended for normal streaming.
             @note{This option only applies when using NVENC [encoder](#encoder).}
         </td>
     </tr>
@@ -2284,7 +2285,7 @@ editing the `conf` file in a text editor. Use the examples as reference.
         <td>Description</td>
         <td colspan="2">
             Assign higher QP values to flat regions of the video.
-            Recommended to enable when streaming at lower bitrates.
+            This can help at lower bitrates, but it is not a general quality win and may reduce performance.
             @note{This option only applies when using NVENC [encoder](#encoder).}
             @warning{Enabling this option may reduce performance.}
         </td>

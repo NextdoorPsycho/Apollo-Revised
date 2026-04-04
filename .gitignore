@@ -56,3 +56,5 @@ package-lock.json
 # Python
 *.pyc
 venv/
+
+docs/upstream-sync-inventory-2026-04-03.md

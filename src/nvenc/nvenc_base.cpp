@@ -115,6 +115,19 @@ namespace {
     }
   }
 
+  std::string_view two_pass_to_string(NV_ENC_MULTI_PASS multi_pass) {
+    switch (multi_pass) {
+      case NV_ENC_MULTI_PASS_DISABLED:
+        return "disabled";
+      case NV_ENC_TWO_PASS_QUARTER_RESOLUTION:
+        return "quarter_res";
+      case NV_ENC_TWO_PASS_FULL_RESOLUTION:
+        return "full_res";
+      default:
+        return "unknown";
+    }
+  }
+
 }  // namespace
 
 namespace nvenc {
@@ -446,6 +459,13 @@ namespace nvenc {
                                  client_config.videoFormat == 1 ? "HEVC " :
                                  client_config.videoFormat == 2 ? "AV1 " :
                                                                   " ";
+      const auto preset_string = quality_preset_string_from_guid(init_params.presetGUID);
+      const auto tune_string = tuning_info_to_string(init_params.tuningInfo);
+      const auto two_pass_string = two_pass_to_string(enc_config.rcParams.multiPass);
+      const bool weighted_prediction_enabled = init_params.enableWeightedPrediction != 0;
+      const bool spatial_aq_enabled = enc_config.rcParams.enableAQ != 0;
+      const bool full_res_two_pass = enc_config.rcParams.multiPass == NV_ENC_TWO_PASS_FULL_RESOLUTION;
+      const bool high_cost_preset = config.quality_preset >= 6;
       std::string extra;
       if (init_params.enableEncodeAsync) {
         extra += " async";
@@ -478,7 +498,44 @@ namespace nvenc {
         extra += " filler-data";
       }
 
-      BOOST_LOG(info) << "NvEnc: created encoder " << video_format_string << quality_preset_string_from_guid(init_params.presetGUID) << ' ' << tuning_info_to_string(init_params.tuningInfo) << extra;
+      BOOST_LOG(info)
+        << "NvEnc: created encoder "
+        << video_format_string
+        << preset_string
+        << ' '
+        << tune_string
+        << extra
+        << " bitrate=" << client_config.bitrate << "kbps"
+        << " resolution=" << client_config.width << 'x' << client_config.height
+        << " fps=" << client_config.framerate
+        << " slices=" << client_config.slicesPerFrame
+        << " refs=" << encoder_params.ref_frames_in_dpb
+        << " multipass=" << two_pass_string
+        << " weighted_prediction=" << (weighted_prediction_enabled ? "enabled" : "disabled")
+        << " spatial_aq=" << (spatial_aq_enabled ? "enabled" : "disabled");
+
+      if (high_cost_preset && (init_params.tuningInfo == NV_ENC_TUNING_INFO_LOW_LATENCY || init_params.tuningInfo == NV_ENC_TUNING_INFO_ULTRA_LOW_LATENCY)) {
+        BOOST_LOG(warning)
+          << "NvEnc: "
+          << preset_string
+          << " with "
+          << tune_string
+          << " tuning is a high-cost combination. Higher presets mostly improve compression efficiency at a given bitrate and are usually worse value than increasing bitrate unless the stream is bitrate-constrained.";
+      }
+
+      if (full_res_two_pass) {
+        BOOST_LOG(warning)
+          << "NvEnc: full-resolution two-pass is an expensive expert setting. It should only be used when bitrate efficiency matters more than encode cost and latency.";
+      }
+
+      if (high_cost_preset && enc_config.rcParams.multiPass != NV_ENC_MULTI_PASS_DISABLED) {
+        BOOST_LOG(warning)
+          << "NvEnc: "
+          << preset_string
+          << " combined with "
+          << two_pass_string
+          << " multipass is a very expensive configuration. It rarely improves visual quality as much as a moderate bitrate increase unless the stream is heavily bitrate-constrained.";
+      }
     }
 
     encoder_state = {};

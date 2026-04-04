@@ -16,15 +16,27 @@ const config = ref(props.config)
     <div class="mb-3">
       <label for="nvenc_preset" class="form-label">{{ $t('config.nvenc_preset') }}</label>
       <select id="nvenc_preset" class="form-select" v-model="config.nvenc_preset">
-        <option value="1">P1 {{ $t('config.nvenc_preset_1') }}</option>
+        <option value="1">P1</option>
         <option value="2">P2</option>
-        <option value="3">P3</option>
+        <option value="3">P3 {{ $t('config.nvenc_preset_3') }}</option>
         <option value="4">P4</option>
         <option value="5">P5</option>
         <option value="6">P6</option>
         <option value="7">P7 {{ $t('config.nvenc_preset_7') }}</option>
       </select>
       <div class="form-text">{{ $t('config.nvenc_preset_desc') }}</div>
+    </div>
+
+    <!-- Tuning profile -->
+    <div class="mb-3">
+      <label for="nvenc_tune" class="form-label">{{ $t('config.nvenc_tune') }}</label>
+      <select id="nvenc_tune" class="form-select" v-model="config.nvenc_tune">
+        <option value="hq">{{ $t('config.nvenc_tune_hq') }}</option>
+        <option value="ll">{{ $t('config.nvenc_tune_ll') }}</option>
+        <option value="ull">{{ $t('config.nvenc_tune_ull') }}</option>
+        <option value="lossless">{{ $t('config.nvenc_tune_lossless') }}</option>
+      </select>
+      <div class="form-text">{{ $t('config.nvenc_tune_desc') }}</div>
     </div>
 
     <!-- Two-pass mode -->
@@ -44,6 +56,14 @@ const config = ref(props.config)
               locale-prefix="config"
               v-model="config.nvenc_spatial_aq"
               default="false"
+    ></Checkbox>
+
+    <!-- Weighted prediction -->
+    <Checkbox class="mb-3"
+              id="nvenc_weighted_prediction"
+              locale-prefix="config"
+              v-model="config.nvenc_weighted_prediction"
+              default="true"
     ></Checkbox>
 
     <!-- Single-frame VBV/HRD percentage increase -->
