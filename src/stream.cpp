@@ -2073,7 +2073,7 @@ namespace stream {
 
       // If this is the last session, invoke the platform callbacks
       if (--running_sessions == 0) {
-        bool revert_display_config {config::video.dd.config_revert_on_disconnect || session.sole_display};
+        bool revert_display_config {config::video.dd.config_revert_on_disconnect || session.sole_display || proc::proc.virtual_display};
         if (proc::proc.running()) {
           proc::proc.pause();
         } else {
@@ -2081,7 +2081,9 @@ namespace stream {
           revert_display_config = true;
         }
 
-        if (revert_display_config) {
+        if (proc::proc.virtual_display) {
+          proc::proc.release_display_topology_on_disconnect();
+        } else if (revert_display_config) {
           display_device::revert_configuration();
         }
 

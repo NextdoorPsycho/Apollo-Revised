@@ -1485,11 +1485,22 @@ namespace nvhttp {
       launch_session->input_only = true;
     }
 
-    if (no_active_sessions && !proc::proc.virtual_display) {
-      // We want to prepare display only if there are no active sessions
-      // and the current session isn't virtual display at the moment.
-      // This should be done before probing encoders as it could change the active displays.
-      display_device::configure_display(config::video, *launch_session);
+    if (no_active_sessions) {
+      // If the requested display topology changed while the app remained running,
+      // rebuild it now so reconnects pick up the new sole/virtual/multi settings.
+      if (proc::proc.has_display_topology_change(*launch_session)) {
+        if (proc::proc.refresh_display_topology(launch_session)) {
+          tree.put("root.resume", 0);
+          tree.put("root.<xmlattr>.status_code", 503);
+          tree.put("root.<xmlattr>.status_message", "Failed to initialize video capture/encoding. Is a display connected and turned on?");
+          return;
+        }
+      } else if (!proc::proc.virtual_display) {
+        // We want to prepare display only if there are no active sessions
+        // and the current session isn't virtual display at the moment.
+        // This should be done before probing encoders as it could change the active displays.
+        display_device::configure_display(config::video, *launch_session);
+      }
 
       // Probe encoders again before streaming to ensure our chosen
       // encoder matches the active GPU (which could have changed

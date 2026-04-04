@@ -141,6 +141,9 @@ namespace proc {
     void resume();
     void pause();
     void terminate(bool immediate = false, bool needs_refresh = true);
+    bool has_display_topology_change(const rtsp_stream::launch_session_t &launch_session) const;
+    int refresh_display_topology(std::shared_ptr<rtsp_stream::launch_session_t> launch_session);
+    void release_display_topology_on_disconnect();
 
   private:
     int _app_id = 0;

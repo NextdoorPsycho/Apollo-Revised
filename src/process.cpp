@@ -198,6 +198,12 @@ namespace proc {
   }
 
   int proc_t::execute(const ctx_t& app, std::shared_ptr<rtsp_stream::launch_session_t> launch_session) {
+    if (launch_session->multi_display) {
+      // Multi-display manages its own virtual topology and does not use the
+      // single-display persistence path from display_device.
+      display_device::reset_persistence();
+    }
+
     if (_app_id == input_only_app_id) {
       terminate(false, false);
       std::this_thread::sleep_for(1s);
@@ -242,7 +248,11 @@ namespace proc {
       // Restore to user defined output name
       config::video.output_name = this->initial_display;
       terminate();
-      display_device::revert_configuration();
+      if (launch_session->multi_display) {
+        display_device::reset_persistence();
+      } else {
+        display_device::revert_configuration();
+      }
     });
 
     if (!app.gamepad.empty()) {
@@ -797,6 +807,285 @@ namespace proc {
     return 0;
   }
 
+  bool proc_t::has_display_topology_change(const rtsp_stream::launch_session_t &launch_session) const {
+    if (!_launch_session) {
+      return true;
+    }
+
+    if ((launch_session.virtual_display || launch_session.sole_display || launch_session.multi_display) && !virtual_display) {
+      return true;
+    }
+
+    if (_launch_session->virtual_display != launch_session.virtual_display ||
+        _launch_session->sole_display != launch_session.sole_display ||
+        _launch_session->multi_display != launch_session.multi_display ||
+        _launch_session->width != launch_session.width ||
+        _launch_session->height != launch_session.height ||
+        _launch_session->fps != launch_session.fps ||
+        _launch_session->scale_factor != launch_session.scale_factor ||
+        _launch_session->requested_displays.size() != launch_session.requested_displays.size()) {
+      return true;
+    }
+
+    for (std::size_t i = 0; i < _launch_session->requested_displays.size(); ++i) {
+      const auto &current = _launch_session->requested_displays[i];
+      const auto &requested = launch_session.requested_displays[i];
+      if (current.client_id != requested.client_id ||
+          current.width != requested.width ||
+          current.height != requested.height ||
+          current.fps != requested.fps ||
+          current.offset_x != requested.offset_x ||
+          current.offset_y != requested.offset_y ||
+          current.primary != requested.primary) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  int proc_t::refresh_display_topology(std::shared_ptr<rtsp_stream::launch_session_t> launch_session) {
+#ifdef _WIN32
+    uint32_t render_width = launch_session->width ? launch_session->width : 1920;
+    uint32_t render_height = launch_session->height ? launch_session->height : 1080;
+
+    int scale_factor = launch_session->scale_factor;
+    if (_app.scale_factor != 100) {
+      scale_factor = _app.scale_factor;
+    }
+
+    if (scale_factor != 100) {
+      render_width *= ((float) scale_factor / 100);
+      render_height *= ((float) scale_factor / 100);
+      render_width &= ~1;
+      render_height &= ~1;
+    }
+
+    launch_session->width = render_width;
+    launch_session->height = render_height;
+
+    if (_launch_session && _launch_session->virtual_display && vDisplayDriverStatus == VDISPLAY::DRIVER_STATUS::OK) {
+      if (_launch_session->multi_display && !_launch_session->requested_displays.empty()) {
+        for (auto it = _launch_session->requested_displays.rbegin(); it != _launch_session->requested_displays.rend(); ++it) {
+          std::ignore = VDISPLAY::removeVirtualDisplay(it->display_guid);
+        }
+      } else {
+        std::ignore = VDISPLAY::removeVirtualDisplay(_launch_session->display_guid);
+      }
+    }
+
+    if (_launch_session && _launch_session->sole_display) {
+      display_device::revert_configuration();
+    } else {
+      display_device::reset_persistence();
+    }
+
+    display_name.clear();
+    display_names.clear();
+    virtual_display = false;
+    config::video.output_name = initial_display;
+
+    if (
+      config::video.headless_mode ||
+      launch_session->virtual_display ||
+      launch_session->sole_display ||
+      launch_session->multi_display ||
+      _app.virtual_display ||
+      !video::allow_encoder_probing()
+    ) {
+      if (vDisplayDriverStatus != VDISPLAY::DRIVER_STATUS::OK) {
+        initVDisplayDriver();
+      }
+
+      if (vDisplayDriverStatus != VDISPLAY::DRIVER_STATUS::OK) {
+        launch_session->virtual_display = false;
+        if (launch_session->sole_display || launch_session->multi_display) {
+          return 503;
+        }
+      } else {
+        if (!config::video.adapter_name.empty()) {
+          VDISPLAY::setRenderAdapterByName(platf::from_utf8(config::video.adapter_name));
+        }
+
+        std::string device_name;
+        std::string device_uuid_str;
+        uuid_util::uuid_t device_uuid;
+
+        if (_app.use_app_identity) {
+          device_name = _app.name;
+          if (_app.per_client_app_identity) {
+            device_uuid = uuid_util::uuid_t::parse(launch_session->unique_id);
+            auto app_uuid = uuid_util::uuid_t::parse(_app.uuid);
+            device_uuid.b64[0] ^= app_uuid.b64[0];
+            device_uuid.b64[1] ^= app_uuid.b64[1];
+            device_uuid_str = device_uuid.string();
+          } else {
+            device_uuid_str = _app.uuid;
+            device_uuid = uuid_util::uuid_t::parse(_app.uuid);
+          }
+        } else {
+          device_name = launch_session->device_name;
+          device_uuid_str = launch_session->unique_id;
+          device_uuid = uuid_util::uuid_t::parse(launch_session->unique_id);
+        }
+
+        if (launch_session->multi_display) {
+          std::vector<VDISPLAY::display_layout_t> layouts;
+          layouts.reserve(launch_session->requested_displays.size());
+
+          for (std::size_t display_index = 0; display_index < launch_session->requested_displays.size(); ++display_index) {
+            auto &requested_display = launch_session->requested_displays[display_index];
+            auto requested_uuid = derive_display_uuid(device_uuid, display_index);
+            requested_display.display_guid = *reinterpret_cast<GUID *>(&requested_uuid);
+
+            int display_fps = normalize_target_fps(requested_display.fps);
+            if (config::video.double_refreshrate) {
+              display_fps *= 2;
+            }
+
+            std::wstring created_display_name = VDISPLAY::createVirtualDisplay(
+              requested_uuid.string().c_str(),
+              device_name.c_str(),
+              requested_display.width,
+              requested_display.height,
+              display_fps,
+              requested_display.display_guid
+            );
+
+            launch_session->virtual_display = true;
+            if (created_display_name.empty()) {
+              return 503;
+            }
+
+            VDISPLAY::changeDisplaySettings(
+              created_display_name.c_str(),
+              requested_display.width,
+              requested_display.height,
+              display_fps
+            );
+
+            layouts.emplace_back(VDISPLAY::display_layout_t {
+              created_display_name,
+              requested_display.offset_x,
+              requested_display.offset_y,
+              requested_display.width,
+              requested_display.height,
+              requested_display.primary
+            });
+
+            display_names.emplace_back(platf::to_utf8(created_display_name));
+          }
+
+          if (VDISPLAY::applyDisplayLayout(layouts) != ERROR_SUCCESS) {
+            return 503;
+          }
+
+          virtual_display = true;
+          if (!display_names.empty()) {
+            display_name = display_names.front();
+            config::video.output_name = display_device::map_display_name(display_name);
+          }
+        } else {
+          memcpy(&launch_session->display_guid, &device_uuid, sizeof(GUID));
+
+          int target_fps = normalize_target_fps(launch_session->fps);
+          if (config::video.double_refreshrate) {
+            target_fps *= 2;
+          }
+
+          std::wstring vdisplayName = VDISPLAY::createVirtualDisplay(
+            device_uuid_str.c_str(),
+            device_name.c_str(),
+            render_width,
+            render_height,
+            target_fps,
+            launch_session->display_guid
+          );
+
+          launch_session->virtual_display = true;
+          if (!vdisplayName.empty()) {
+            if (launch_session->width && launch_session->height && launch_session->fps) {
+              VDISPLAY::changeDisplaySettings(vdisplayName.c_str(), render_width, render_height, target_fps);
+            }
+
+            if (config::video.isolated_virtual_display_option == true) {
+              VDISPLAY::changeDisplaySettings2(vdisplayName.c_str(), render_width, render_height, target_fps, true);
+            }
+
+            virtual_display = true;
+            display_name = platf::to_utf8(vdisplayName);
+            display_names = {display_name};
+
+            std::string mapped_display_id;
+            auto retry_interval = 100ms;
+            while (mapped_display_id.empty()) {
+              mapped_display_id = display_device::map_display_name(display_name);
+              if (!mapped_display_id.empty()) {
+                break;
+              }
+
+              if (!launch_session->sole_display && retry_interval > 800ms) {
+                break;
+              }
+
+              if (retry_interval > 2s) {
+                break;
+              }
+
+              std::this_thread::sleep_for(retry_interval);
+              retry_interval *= 2;
+            }
+
+            config::video.output_name = mapped_display_id;
+            if (config::video.output_name.empty() && launch_session->sole_display) {
+              return 503;
+            }
+          } else if (launch_session->sole_display) {
+            return 503;
+          }
+        }
+      }
+    }
+#else
+    display_device::revert_configuration();
+#endif
+
+    _launch_session = launch_session;
+    return 0;
+  }
+
+  void proc_t::release_display_topology_on_disconnect() {
+#ifdef _WIN32
+    if (!_launch_session) {
+      return;
+    }
+
+    bool used_virtual_display = vDisplayDriverStatus == VDISPLAY::DRIVER_STATUS::OK && _launch_session->virtual_display;
+    if (used_virtual_display) {
+      if (_launch_session->multi_display && !_launch_session->requested_displays.empty()) {
+        for (auto it = _launch_session->requested_displays.rbegin(); it != _launch_session->requested_displays.rend(); ++it) {
+          std::ignore = VDISPLAY::removeVirtualDisplay(it->display_guid);
+        }
+      } else {
+        std::ignore = VDISPLAY::removeVirtualDisplay(_launch_session->display_guid);
+      }
+    }
+
+    if (_launch_session->sole_display || _launch_session->multi_display) {
+      display_device::revert_configuration();
+    } else if (_launch_session->virtual_display) {
+      display_device::reset_persistence();
+    }
+
+    display_name.clear();
+    display_names.clear();
+    virtual_display = false;
+    config::video.output_name = initial_display;
+#else
+    display_device::revert_configuration();
+#endif
+  }
+
   void proc_t::resume() {
     BOOST_LOG(info) << "Session resuming for app [" << _app_name << "].";
 
@@ -980,8 +1269,10 @@ namespace proc {
     // Only show the Stopped notification if we actually have an app to stop
     // Since terminate() is always run when a new app has started
     if (proc::proc.get_last_run_app_name().length() > 0 && has_run) {
-      if (used_virtual_display && _launch_session && (_launch_session->sole_display || _launch_session->multi_display)) {
+      if (used_virtual_display && _launch_session && _launch_session->sole_display) {
         display_device::revert_configuration();
+      } else if (used_virtual_display && _launch_session && _launch_session->multi_display) {
+        display_device::reset_persistence();
       } else if (used_virtual_display) {
         display_device::reset_persistence();
       } else {
