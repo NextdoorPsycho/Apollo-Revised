@@ -23,8 +23,8 @@ namespace nvenc {
    * @brief NVENC encoder configuration.
    */
   struct nvenc_config {
-    // Quality preset from 1 to 7, higher is slower
-    int quality_preset = 3;
+    // Quality preset from 1 to 7, higher is slower. P1 keeps host GPU cost lowest for LAN latency profiles.
+    int quality_preset = 1;
 
     // Encoder tuning target. Low latency is a better default balance than ultra low latency on modern GPUs.
     nvenc_tuning_info tuning_info = nvenc_tuning_info::low_latency;

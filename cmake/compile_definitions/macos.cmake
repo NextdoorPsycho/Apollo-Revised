@@ -2,6 +2,14 @@
 
 add_compile_definitions(SUNSHINE_PLATFORM="macos")
 
+# Boost.Asio (pulled in via Boost.Process v1) auto-detects std::invoke_result by probing the
+# __cpp_lib_is_invocable feature macro, which is only visible if <type_traits>/<version> was
+# already included when <boost/asio/detail/config.hpp> is first parsed. Under C++23 with libc++
+# that detection is unreliable, and Asio's fallback uses std::result_of, which C++23 removed.
+# Force the modern path so Asio always uses std::invoke_result. Safe because the project requires
+# C++23, where std::invoke_result is guaranteed.
+add_compile_definitions(BOOST_ASIO_HAS_STD_INVOKE_RESULT=1)
+
 set(MACOS_LINK_DIRECTORIES
         /opt/homebrew/lib
         /opt/local/lib

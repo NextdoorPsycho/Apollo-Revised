@@ -33,7 +33,10 @@
 
 using namespace std::literals;
 namespace fs = std::filesystem;
-namespace bp = boost::process;
+// Boost 1.88+ makes the unversioned `boost::process` namespace alias Boost.Process v2, whose
+// API differs from the v1 interface this file uses. Pin to v1 explicitly, matching the include
+// of <boost/process/v1.hpp> above and the linux platform code (src/platform/linux/misc.cpp).
+namespace bp = boost::process::v1;
 
 namespace platf {
 

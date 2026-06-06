@@ -179,9 +179,7 @@ int main(int argc, char *argv[]) {
   log_publisher_data();
 
   // Log modified_config_settings
-  for (auto &[name, val] : config::modified_config_settings) {
-    BOOST_LOG(info) << "config: '"sv << name << "' = "sv << val;
-  }
+  config::log_config_settings(config::modified_config_settings, false);
   config::modified_config_settings.clear();
 
   if (!config::sunshine.cmd.name.empty()) {
@@ -333,6 +331,11 @@ int main(int argc, char *argv[]) {
     force_shutdown = task_pool.pushDelayed(task, 10s).task_id;
 
     shutdown_event->raise(true);
+
+    if (tray_is_enabled && config::sunshine.system_tray) {
+      system_tray::end_tray();
+    }
+
     display_device_deinit_guard = nullptr;
   });
 
@@ -347,6 +350,11 @@ int main(int argc, char *argv[]) {
     force_shutdown = task_pool.pushDelayed(task, 10s).task_id;
 
     shutdown_event->raise(true);
+
+    if (tray_is_enabled && config::sunshine.system_tray) {
+      system_tray::end_tray();
+    }
+
     display_device_deinit_guard = nullptr;
   });
 

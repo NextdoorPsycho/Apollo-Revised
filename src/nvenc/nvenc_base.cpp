@@ -268,6 +268,11 @@ namespace nvenc {
     init_params.darHeight = encoder_params.height;
     init_params.frameRateNum = client_config.framerate;
     init_params.frameRateDen = 1;
+    if (client_config.framerateX100 > 0) {
+      AVRational fps = video::framerateX100_to_rational(client_config.framerateX100);
+      init_params.frameRateNum = fps.num;
+      init_params.frameRateDen = fps.den;
+    }
 
     NV_ENC_PRESET_CONFIG preset_config = {min_struct_version(NV_ENC_PRESET_CONFIG_VER), {min_struct_version(NV_ENC_CONFIG_VER, 7, 8)}};
     if (nvenc_failed(nvenc->nvEncGetEncodePresetConfigEx(encoder, init_params.encodeGUID, init_params.presetGUID, init_params.tuningInfo, &preset_config))) {
@@ -342,6 +347,9 @@ namespace nvenc {
       vui_config.chromaSampleLocationFlag = buffer_is_yuv444() ? 0 : 1;
       vui_config.chromaSampleLocationTop = 0;
       vui_config.chromaSampleLocationBot = 0;
+
+      // This is critical for low decoding latency on certain devices
+      vui_config.bitstreamRestrictionFlag = 1;
     };
 
     switch (client_config.videoFormat) {
@@ -359,6 +367,21 @@ namespace nvenc {
           set_ref_frames(format_config.maxNumRefFrames, format_config.numRefL0, 5);
           set_minqp_if_enabled(config.min_qp_h264);
           fill_h264_hevc_vui(format_config.h264VUIParameters);
+          if (client_config.enableIntraRefresh == 1) {
+            if (get_encoder_cap(NV_ENC_CAPS_SUPPORT_INTRA_REFRESH)) {
+              format_config.enableIntraRefresh = 1;
+              format_config.intraRefreshPeriod = 300;
+              format_config.intraRefreshCnt = 299;
+              format_config.outputRecoveryPointSEI = 1;
+              if (get_encoder_cap(NV_ENC_CAPS_SINGLE_SLICE_INTRA_REFRESH)) {
+                format_config.singleSliceIntraRefresh = 1;
+              } else {
+                BOOST_LOG(warning) << "NvEnc: Single Slice Intra Refresh not supported";
+              }
+            } else {
+              BOOST_LOG(error) << "NvEnc: Client asked for intra-refresh but the encoder does not support intra-refresh";
+            }
+          }
           break;
         }
 
@@ -378,6 +401,7 @@ namespace nvenc {
               format_config.enableIntraRefresh = 1;
               format_config.intraRefreshPeriod = 300;
               format_config.intraRefreshCnt = 299;
+              format_config.outputRecoveryPointSEI = 1;
               if (get_encoder_cap(NV_ENC_CAPS_SINGLE_SLICE_INTRA_REFRESH)) {
                 format_config.singleSliceIntraRefresh = 1;
               } else {

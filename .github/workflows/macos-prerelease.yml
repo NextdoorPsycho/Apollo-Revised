@@ -1,0 +1,122 @@
+name: macOS Build & Pre-release
+
+# Build Apollo for macOS (Apple Silicon / arm64) on every push and publish a per-commit
+# pre-release with the built artifact attached.
+#
+# The actual build recipe lives in scripts/macos_*.sh so it stays identical between local
+# development and CI. To add another platform later, add a job that calls its own scripts.
+on:
+  push:
+    branches:
+      - '**'          # every push to any branch (tag pushes do not match -> no release recursion)
+  workflow_dispatch:  # allow manual runs
+
+# Only keep the latest run per branch; cancel superseded builds to save runner minutes.
+concurrency:
+  group: macos-prerelease-${{ github.ref }}
+  cancel-in-progress: true
+
+# Required so the release step can create tags/releases with the default GITHUB_TOKEN.
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & package (macOS arm64)
+    runs-on: macos-15   # GitHub-hosted Apple Silicon runner
+
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0   # full history so the commit-count version (0.0.<count>) is correct
+
+      - name: Compute version metadata
+        id: meta
+        run: |
+          echo "short_sha=$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
+          echo "count=$(git rev-list --count HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # package-lock.json is not committed, so cache the npm download dir keyed on package.json
+      # rather than using setup-node's lockfile-based cache.
+      - name: Cache npm downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package.json') }}
+          restore-keys: |
+            npm-${{ runner.os }}-${{ runner.arch }}-
+
+      # Cache downloaded Homebrew bottles so dependency installs are fast on warm runners.
+      - name: Cache Homebrew downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/Homebrew/downloads
+          key: brew-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/macos_deps.sh') }}
+          restore-keys: |
+            brew-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Install build dependencies
+        run: ./scripts/macos_deps.sh
+
+      # Cache compiled objects across runs; gives the biggest speedup on incremental builds.
+      - name: Set up ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ccache-macos-arm64-${{ github.ref_name }}
+          restore-keys: |
+            ccache-macos-arm64-
+          max-size: 2G
+
+      # Cache CMake FetchContent downloads (e.g. nlohmann_json) keyed on the dependency definitions.
+      - name: Cache CMake FetchContent
+        uses: actions/cache@v4
+        with:
+          path: build-package/_deps
+          key: fetchcontent-macos-arm64-${{ hashFiles('cmake/dependencies/**', 'CMakeLists.txt') }}
+          restore-keys: |
+            fetchcontent-macos-arm64-
+
+      - name: Build and package
+        env:
+          COMMIT: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
+          SKIP_SUBMODULES: '1'   # actions/checkout already fetched submodules
+          # Route compilation through ccache; the package script appends this to its own flags.
+          CMAKE_EXTRA_ARGS: "-DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+        run: ./scripts/macos_package.sh
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Apollo-macos-arm64-${{ steps.meta.outputs.short_sha }}
+          path: dist/*.tar.gz
+          if-no-files-found: error
+
+      - name: Publish pre-release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: pre-${{ steps.meta.outputs.short_sha }}
+          name: Apollo pre-release ${{ steps.meta.outputs.short_sha }}
+          prerelease: true
+          target_commitish: ${{ github.sha }}
+          fail_on_unmatched_files: true
+          files: dist/*.tar.gz
+          body: |
+            Automated **macOS (Apple Silicon / arm64)** pre-release.
+
+            - Commit: `${{ github.sha }}`
+            - Build version: `0.0.${{ steps.meta.outputs.count }}`
+
+            This is an **unsigned** build. Download and extract the tarball, then run `./run.sh`.
+            If macOS Gatekeeper blocks it, clear the quarantine attribute first:
+
+            ```
+            xattr -dr com.apple.quarantine Apollo-macos-arm64
+            ```

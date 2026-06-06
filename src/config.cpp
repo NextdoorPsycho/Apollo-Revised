@@ -490,7 +490,7 @@ namespace config {
     true,  // nv_opengl_vulkan_on_dxgi
     true,  // nv_sunshine_high_power_mode
     {
-      14,  // preset
+      12,  // preset
       2,  // tuning_info (NV_ENC_TUNING_INFO_LOW_LATENCY)
       0,  // multipass (NV_ENC_MULTI_PASS_DISABLED)
       1,  // h264_coder (NV_ENC_H264_ENTROPY_CODING_MODE_CABAC)
@@ -575,6 +575,7 @@ namespace config {
 
     ENCRYPTION_MODE_NEVER,  // lan_encryption_mode
     ENCRYPTION_MODE_OPPORTUNISTIC,  // wan_encryption_mode
+    0,  // packetsize
   };
 
   nvhttp_t nvhttp {
@@ -1126,22 +1127,24 @@ namespace config {
     return opts;
   }
 
-  void apply_config(std::unordered_map<std::string, std::string> &&vars) {
-#ifndef __ANDROID__
-    // TODO: Android can possibly support this
-    if (!fs::exists(stream.file_apps.c_str())) {
-      fs::copy_file(SUNSHINE_ASSETS_DIR "/apps.json", stream.file_apps);
-    }
-#endif
-
+  void log_config_settings(const std::unordered_map<std::string, std::string> &vars, bool save) {
     for (auto &[name, val] : vars) {
+      bool is_redacted = std::ranges::find(config::redacted_config, name) != config::redacted_config.end();
+
     #ifdef _WIN32
-      BOOST_LOG(info) << "config: ["sv << name << "] -- ["sv << utf8ToAcp(val) << ']';
+      BOOST_LOG(info) << "config: ["sv << name << "] -- ["sv << (is_redacted ? "[redacted]" : utf8ToAcp(val)) << ']';
     #else
-      BOOST_LOG(info) << "config: ["sv << name << "] -- ["sv << val << ']';
+      BOOST_LOG(info) << "config: ["sv << name << "] -- ["sv << (is_redacted ? "[redacted]" : val) << ']';
     #endif
-      modified_config_settings[name] = val;
+
+      if (save) {
+        modified_config_settings[name] = val;
+      }
     }
+  }
+
+  void apply_config(std::unordered_map<std::string, std::string> &&vars) {
+    log_config_settings(vars, true);
 
     bool_f(vars, "headless_mode", video.headless_mode);
     bool_f(vars, "limit_framerate", video.limit_framerate);
@@ -1284,8 +1287,21 @@ namespace config {
 
     int_between_f(vars, "lan_encryption_mode", stream.lan_encryption_mode, {0, 2});
     int_between_f(vars, "wan_encryption_mode", stream.wan_encryption_mode, {0, 2});
+    int_between_f(vars, "packetsize", stream.packetsize, {0, PACKETSIZE_MAX});
 
     path_f(vars, "file_apps", stream.file_apps);
+#ifndef __ANDROID__
+    // TODO: Android can possibly support this
+    if (!fs::exists(stream.file_apps.c_str())) {
+      fs::copy_file(SUNSHINE_ASSETS_DIR "/apps.json", stream.file_apps);
+      fs::permissions(
+        stream.file_apps,
+        fs::perms::owner_read | fs::perms::owner_write,
+        fs::perm_options::add
+      );
+    }
+#endif
+
     int_between_f(vars, "fec_percentage", stream.fec_percentage, {1, 255});
 
     map_int_int_f(vars, "keybindings"s, input.keybindings);

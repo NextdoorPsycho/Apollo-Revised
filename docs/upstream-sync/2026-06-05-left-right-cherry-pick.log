@@ -1,0 +1,185 @@
+> 7d234bfa build(homebrew): fix service install on linux (#5223)
+> 0e351405 build(python): migrate to uv (#5222)
+> 3ee4144a fix(macos): drop max_ref_frames=1 for h264_videotoolbox and enable PARALLEL_ENCODING (#5200)
+> d7e88da0 build(macos): quote SHOULD_SIGN env expansion in install script (#5185)
+> dbce2291 fix(linux): migrate to qt tray (#4907)
+> 3a69acef feat(rtsp): add option to limit packetsize for clients that cannot configure it (#5153)
+> 2db7176f fix(Windows-installer): move ViGEmBus to ThirdParty group (#5157)
+> 3a196379 fix(web): disconnect only the disabled client instead of all sessions (#5138)
+> 71323d38 build(windows): drop unused boost-locale (#5116)
+> f9d1aca7 build(macos): configure C++ standard and ICU root (#5101)
+> 07099901 build(deps): Add SUNSHINE_SYSTEM_VULKAN_HEADERS option (#5103)
+> 0db9f73e feat(nvenc): support intraRefresh for h264, add outputRecoveryPointSEI=1 to intra-refresh config for h264 and hevc (#5091)
+> c6988fd7 build(web-ui): commit lock file (#5083)
+> a90d3068 feat(capture/linux): add KWin direct screencast capture method (#5009)
+> 293c1ed3 fix: touch scaling bug and initialize display variables as 0 (#4758)
+> eb45ea78 fix(linux/vulkan): change default rate control from VBR to CBR (#5032)
+> a5af7907 feat(nvenc): support for split frame encoding on GPUs with 2+ nvenc blocks (#4892)
+> e180053e fix(linux/vulkan): remove deprecated FFmpeg Vulkan queue lock/unlock (#5031)
+> 44bf39be fix: Resolve minimum_fps_target related issues on all platforms (#4967)
+> 7228c255 fix(rtsp): ignore clientRefreshRateX100 if more than 1% variance from framerate (#5027)
+> 5ffa66ee refactor(linux/xdgportal): Split pipewire code into it's own file so it can be reused (#5008)
+> 32100783 fix(linux): auto-detect GPU with connected display for VAAPI and Vulkan (#4961)
+> a40f27f3 fix(linux/vulkan): guard deprecated FFmpeg Vulkan queue lock/unlock (#5005)
+> 31b85802 fix: redact logging of sensitive config & CSRF validation (#4955)
+< 99595263 enc
+< 8831b53d f
+< fb9e31cc nvenc changes
+< e57eb167 fallback
+< e417eb96 Testing things
+> 0752f641 feat(linux): Add Vulkan video encoder (#4603)
+> aa607821 build: Allow FFMPEG_PLATFORM_LIBRARIES to be overridden by the user (#4915)
+< 2aa5a396 fix(vaapi): enable rate control buffer and explicit rc_mode for VAAPI encoders
+> 7df35f40 build: fix build-deps tag matching (#4899)
+> 3e06afab feat(linux): add thread priority support for POSIX systems (#4885)
+> ae8adfd8 feat(linux/glad): implement EGL_IMG_context_priority (#4857)
+> 0d3be0bb feat(macOS): Capture audio on macOS using Tap API (#4209)
+< 52000d05 fix(wayland): set frame timestamps for wlgrab captures
+> 253e624e fix(linux/xdgportal): allow unified systemd service for all capture methods (#4854)
+> ea201155 build(linux): generate glad sources at compile time (#4798)
+> 99d4e053 fix(linux/xdgportal): avoid duplicate frame insertion (#4839)
+> 7e3cf702 build(deps): move nvapi to official NVIDIA repo and bump to R590 (#3725)
+> f04f6a2b refactor(confighttp): HTML page handlers into generic getPage function (#4645)
+> daa99db6 fix(linux): use FQDN naming for all Linux packaging types (#4779)
+> e776b65b build(homebrew): dynamic link opus (#4826)
+> 49abb160 fix(build): ensure libopus is statically linked (#4819)
+> 423a864e feat(macos): build a signed .app bundle in a .dmg (#4759)
+> 188f1e29 style(cpp): separate multiple variable declarations (#4795)
+> 2b7af211 refactor: replace macros with constexpr/consts (#4791)
+> 9d062285 build(deps): migrate ffmpeg prebuild to downloaded archive (#4699)
+> d5916437 build(windows): add arm64 support (#3905)
+> cdc44431 feat(installer/windows): add wix installer (#3916)
+> e2652fa5 refactor(packaging/windows): installer script execution (#4675)
+> 874880e5 feat(linux)!: Support streaming through XDG portals and Pipewire (#4417)
+> b6757c5e build: add --ignore-scripts to npm install commands (#4655)
+> 7e286b90 feat(windows): add ViGEmBus driver management API and UI integration (#4625)
+> 3a12f96a perf(threads): implement adjust_thread_priority for macOS and add set_thread_name (#4605)
+> aea95126 chore: clean up implicit conversions (#4611)
+> aca5d23f fix(linux): fix issues with rendering and touchscreens when displays are scaled (#4607)
+> 19a63011 build(windows): fix rc version for llvm clang (#4606)
+> ab52e27e fix(audio-info): crash when device name contains special characters (#4095)
+> fd2bfaac fix(windows): resolve disappearing cursor after KVM switch (#4407)
+> 8294ab23 fix(config): create apps.json from default after loading file_apps cfg (#4568)
+> 5bacfd59 fix(nvenc): Include bitstream restrictions in H.264/HEVC SPS (#4556)
+> 2e68762e build(Archlinux): Update GCC version in PKGBUILD to 15 (#4546)
+> 0aa7e3fd feat(network): allow binding to specific interface (#4481)
+> d3d26f34 chore: change libevdev source to LizardByte mirror (#4524)
+> 446e0a52 build(tests): static link libgcc and libstdc++ on Linux (#4485)
+> 1d6d916b build: add freebsd support (#4049)
+> 8836db5d fix(config): Add missing framerateX100 fields at the initializers for the video::config_t literals (#4391)
+> 875ad1d1 build(deps): bump boost to 1.89 (#4253)
+> f1a66753 fix(config): ensure apps.json is writeable (#4249)
+< 6d0eaa8e Correct frame timestamp initialization and update logic
+> 6ed0c7a8 feat(fps): support x-nv-video[0].clientRefreshRateX100 for requesting fractional NTSC framerates (#4019)
+> fbcf2116 feat(audio): allow sending continuous audio (#4261)
+> ed7b78f1 build(linux): enable cpack auto dependencies (#4323)
+> f52891d6 build(linux): static link std libraries (#4321)
+< 10fd290b Merge remote-tracking branch 'sunshine/master'
+< db4c2fab Update boost
+< d25f2413 Set a automatic value for min_fps_target resolves #942 resolves #956 resolves #982
+< 6c955482 Stablize encode timing
+< c4b7e8a4 Revert project fqdn for Linux builds
+< 7a1e9c73 Merge branch 'master' of https://github.com/LizardByte/Sunshine
+< 1fd920ef Add option to ignore encoder probe failure
+< fae6da3f Fix warp modes w/ reduce stutters
+< 2a97b3cb Fix API requests content type
+< f5908081 Update key name for rumble forwarding
+< afd88899 Merge remote-tracking branch 'thesystemcoder168/block_rumble_functionality' into PR886
+< 8509611c Fix build
+< e43420f1 Merge remote-tracking branch 'sunshine/master'
+< 576fc4bc Change logic to enable/disable rumble functionality
+< 54cb7ece Added option to disable rumble from the Apollo side
+< 3e0cbaf2 Implement pause/resume commands w/ APOLLO_APP_STATUS envvar
+< d316b272 Add terminate on pause option for apps (resolves #801)
+< 246994da Fix build problems on Linux
+< 26f143fa Update Boost hash to version 1.88.0
+< 1ca19853 Fix encoder probing when no display is active
+< 4030680f App ordering support for legacy clients
+< 69d3b787 Merge remote-tracking branch 'sunshine/master'
+< 03194a6f UCRT64 C++15 workaround (closes #753)
+< 1e71cc06 Make clang happy
+< a1ecd257 Bump boost to 1.88.0
+< a94e8ec4 Merge remote-tracking branch 'sunshine/master'
+< 056c6f46 Merge remote-tracking branch 'sunshine/master'
+< 12f3ba2d Add the option to always have the virtual display be an isolated display - Windows only (#662)
+< 8aff38cf Automatically use virtual display if no active display is detected
+< 69e999d2 Add option to toggle envvar compatibility mode
+< 253203f9 Merge remote-tracking branch 'sunshine/master'
+< 56646c2a Add option to configure auto discovery(mDNS) resolves #539 potentially resolves #611
+< 23d92277 Fix encoding bitrate when client requested fractional fps
+< 04da9f25 Merge remote-tracking branch 'sunshine/master'
+< 9cc0bc92 Track modified settings
+< e2d058fa Merge remote-tracking branch 'sunshine/master'
+< 535a89b2 Potentially fixes #566
+< e2715924 Handle char encoding on logs more correctly
+< a31828dd Merge remote-tracking branch 'sunshine/master'
+< a2e3d249 Turn off tests and documents by default
+< 68792869 Best frame pacing ever
+< 3ae4c881 Even better frame pacing
+< ad9c534e Frame limiter v2 - better frame pacing
+< c6127ed0 Server: implement per-device display mode override
+< 1cdd309c Merge upstream
+< e35fc852 Bring back Auto toggle HDR without using DD methods but DD options
+< 93028a82 Merge remote-tracking branch 'sunshine/master'
+< 137845f8 Use Sunshine encoder hang workaround
+< 72ffbc05 Merge remote-tracking branch 'sunshine/master'
+< b896f683 Fix ffmpeg
+< 78714e65 Fix build
+< fd059e36 Merge remote-tracking branch 'origin/master'
+< 1c8bd0cd Implement frontend part for Double refreshrate. Resolves #299
+< 23dd06b3 Implement input only mode w/ double framerate for virtual display
+< 6d8d0634 Terminate early when hang in encoder is detected
+< 8b005343 Add encoding frame rate limit
+< ff667ec8 Fix build for Linux
+< 7b653280 Default to disable dd_configuration_option
+< 4403cff3 Per client DO/UNDO commands server part - done
+< 791b2540 Fix output_name not working
+< 2a173239 Merge remote-tracking branch 'origin/master'
+< 4b78e3b4 Migrate virtual display config to new Display Device API
+< fcbdaed1 Fix build (Never wanna merge again)
+< 1dc6465f Merge remote-tracking branch 'origin/master'
+< d19906b7 Actually follow user's choice for broadcasting encoder support when first connecting with headless mode
+< 84196177 Merge remote-tracking branch 'origin/master'
+< 26191325 Merge remote-tracking branch 'origin/master'
+< 9ac9c184 Fix build
+< 021f6a63 Merge remote-tracking branch 'origin/master'
+< 46bd3962 Merge remote-tracking branch 'origin/master'
+< 4fad7dcd Merge remote-tracking branch 'origin/dependabot/npm_and_yarn/dev-dependencies-cddfeb1403'
+< d46aecce Rename code page conversion methods
+< 11e0bad4 Add option for intra refresh (resolves #86)
+< 90ed57ee [nvenc] Enable Intra Refresh
+< 4350d8e4 Merge remote-tracking branch 'origin/master'
+< 2aec3cb7 Merge remote-tracking branch 'origin/master'
+< 3510a07c Remove unnecessary move for pod type
+< e8862ad7 Merge remote-tracking branch 'origin/master'
+< d8b98e49 Correctly log config values
+< 05763a0b Merge remote-tracking branch 'origin/master'
+< d22abb1f Merge remote-tracking branch 'origin/master'
+< 9f012639 Add global option for set virtual display as primary display
+< 2c3a0857 Add fallback mode config
+< 8e8f89d5 Launch apps from web UI
+< db5790b3 Implement permission manage web UI
+< 2e7bde89 Implement permission for stream
+< 2617b17a Add option to disable pairing
+< 74e079bd Launch server cmd in a new thread to prevent deadlock after sleep commands
+< 83dfea5d Add default server cmd for demonstration
+< df7c742c Implement server commands through control stream
+< 6f012a14 More graceful(?) HDR reset routine Modified from https://github.com/FrogTheFrog/Sunshine/blob/b6f8573d35eff7c55da6965dfa317dc9722bd4ef/src/platform/windows/display_device/windows_utils.cpp
+< f9b9a766 Add webui config for following client HDR settings
+< 420bf13e Merge remote-tracking branch 'origin/master'
+< 19630a9c Pin current display when monitors are added/removed
+< 94e05421 Ignore line ending change in version generation
+< 9c489aef Merge remote-tracking branch 'origin/master'
+< 276a0496 Add option to quit Apollo from webpage w/ hide tray menu controls
+< 8bbd64f0 Migrate installer to Apollo
+< 88a3cfd7 Merge remote-tracking branch 'origin/master' into vdisplay
+< 8db50446 Support headless mode
+< 0f6d9ba6 Merge remote-tracking branch 'origin/master' into vdisplay
+< 6fa277ec Try add sudovda driver support
+< 25919a9a feat(win/video): support native YUV 4:4:4 encoding (#2533)
+< 8b746ab5 Merge remote-tracking branch 'origin/master'
+< 40b6352a Merge remote-tracking branch 'origin/master'
+< bd69b78f Merge remote-tracking branch 'origin/master'
+< ef3dc646 Further rebrand
+< 774ce931 Try to make the audio sink mess clear
+< a8e1ecde Capture the last used display when restoring a stream

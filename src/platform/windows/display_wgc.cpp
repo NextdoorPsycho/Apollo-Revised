@@ -139,14 +139,13 @@ namespace platf::dxgi {
     }
     try {
       if (winrt::ApiInformation::IsPropertyPresent(L"Windows.Graphics.Capture.GraphicsCaptureSession", L"MinUpdateInterval")) {
-        capture_session.MinUpdateInterval(winrt::TimeSpan{ 10000000 / (config.framerate * 2) });
+        auto min_update_interval = config.framerate > 0 ? winrt::TimeSpan {10000000 / (config.framerate * 2)} : 4ms;
+        capture_session.MinUpdateInterval(min_update_interval);
+      } else {
+        BOOST_LOG(warning) << "Can't set MinUpdateInterval on this version of Windows";
       }
-      else {
-        BOOST_LOG(warning) << "Can't set MinUpdateInterval";
-      }
-    }
-    catch (winrt::hresult_error &e) {
-      BOOST_LOG(warning) << "Screen capture may not be fully supported on this device for this release of Windows: failed to set MinUpdateInterval: [0x"sv << util::hex(e.code()).to_string_view() << ']';
+    } catch (winrt::hresult_error &e) {
+      BOOST_LOG(warning) << "Screen capture may be capped to 60fps on this device for this release of Windows: failed to set MinUpdateInterval: [0x"sv << util::hex(e.code()).to_string_view() << ']';
     }
     try {
       capture_session.StartCapture();

@@ -1002,7 +1002,7 @@ namespace stream {
       input::passthrough(session->input, std::move(plaintext), session->permission);
     });
 
-    server->map(packetTypes[IDX_EXEC_SERVER_CMD], [server](session_t *session, const std::string_view &payload) {
+    server->map(packetTypes[IDX_EXEC_SERVER_CMD], [](session_t *session, const std::string_view &payload) {
       BOOST_LOG(debug) << "type [IDX_EXEC_SERVER_CMD]"sv;
 
       if (!(session->permission & crypto::PERM::server_cmd)) {
@@ -1035,7 +1035,7 @@ namespace stream {
       }
     });
 
-    server->map(packetTypes[IDX_SET_CLIPBOARD], [server](session_t *session, const std::string_view &payload) {
+    server->map(packetTypes[IDX_SET_CLIPBOARD], [](session_t *session, const std::string_view &payload) {
       BOOST_LOG(info) << "type [IDX_SET_CLIPBOARD]: "sv << payload << " size: " << payload.size();
 
       if (!(session->permission & crypto::PERM::clipboard_set)) {
@@ -1044,7 +1044,7 @@ namespace stream {
       }
     });
 
-    server->map(packetTypes[IDX_FILE_TRANSFER_NONCE_REQUEST], [server](session_t *session, const std::string_view &payload) {
+    server->map(packetTypes[IDX_FILE_TRANSFER_NONCE_REQUEST], [](session_t *session, const std::string_view &payload) {
       BOOST_LOG(info) << "type [IDX_FILE_TRANSFER_NONCE_REQUEST]: "sv << payload << " size: " << payload.size();
 
       if (!(session->permission & crypto::PERM::file_upload)) {

@@ -1,0 +1,859 @@
+  1:  ad57d08b <   -:  -------- Remove bots/workflow
+  2:  73bc0609 <   -:  -------- Add force close option on tray menu
+  3:  ce601eb2 <   -:  -------- Remove the annoying discord badge
+  4:  7c84d8e0 <   -:  -------- Actually check password confirmation when first setting password...
+  5:  093760ac <   -:  -------- Add sunshine_name:port and app name to tray menu
+  6:  a8e1ecde <   -:  -------- Capture the last used display when restoring a stream
+  7:  ad3b725a <   -:  -------- Rebrand web-ui
+  8:  d5605cc8 <   -:  -------- Fix audio-info.exe for CJK chars
+  9:  774ce931 <   -:  -------- Try to make the audio sink mess clear
+ 10:  06f20c53 <   -:  -------- Change README to markdown
+ 11:  ef3dc646 <   -:  -------- Further rebrand
+ 12:  f7577055 <   -:  -------- Fix `elevated` string on web ui
+ 13:  034ac5c0 <   -:  -------- Remove gh-pages
+ 14:  e7fd80dc <   -:  -------- Fix frame capture and output duplication for dual GPU setups and virtual displays
+ 15:  b1ec2dff <   -:  -------- Check all pixels instead
+ 16:  f2311bb7 <   -:  -------- clang fixes
+ 17:  eac11665 <   -:  -------- code review suggestions
+ 18:  6d5091bd <   -:  -------- attempt to match previous coding styles
+ 19:  14de699b <   -:  -------- remove else statements
+ 20:  f5fa99cd <   -:  -------- remove code changes that were not needed
+ 21:  4fd9bf78 <   -:  -------- move unmap to fail guard
+ 22:  fe0a032b <   -:  -------- Fetch device name and uniqueid from connection (require Moonlight Noir)
+ 23:  0826abf6 <   -:  -------- fix(linux/audio): don't set pulseaudio buffer size (#2999)
+ 24:  89677241 <   -:  -------- Fix tray messages with different code page
+ 25:  7b74db33 <   -:  -------- fix(linux): ensure NvFBC capture works after multiple sessions (#3020)
+ 26:  25919a9a <   -:  -------- feat(win/video): support native YUV 4:4:4 encoding (#2533)
+ 27:  24a4a89d <   -:  -------- implement cgutmans ideas
+ 28:  5d88d4a0 <   -:  -------- clang fixes
+ 29:  6fa277ec <   -:  -------- Try add sudovda driver support
+ 30:  833c902a <   -:  -------- Report driver status to WebUI
+ 31:  25eb5c87 <   -:  -------- Add virtual display config to apps
+ 32:  e0924e3a <   -:  -------- Add app config to set virtual display as primary
+ 33:  bb88a3c3 <   -:  -------- Add scale factor w/ use server UUID for monitor GUID if client uid not present
+ 34:  79c4b15b <   -:  -------- More detailed vdisplay driver state
+ 35:  8fa306d5 <   -:  -------- Finalize scale factor implementation
+ 36:  f2401c08 <   -:  -------- Set render adapter for virtual display driver w/ show detailed virtual display driver status on config
+ 37:  2fb4ec19 <   -:  -------- Add per-app resolution scale config
+ 38:  e02e2e4d <   -:  -------- Properly terminate the running app when saving apps
+ 39:  c071e4ae <   -:  -------- Fix uninitialized scale_factor
+ 40:  8db50446 <   -:  -------- Support headless mode
+ 41:  68459b51 <   -:  -------- Fix password
+ 42:  1653c06a <   -:  -------- Fix tray
+ 43:  8bbd64f0 <   -:  -------- Migrate installer to Apollo
+ 44:  e06e1429 <   -:  -------- Add pause to tools
+ 45:  276a0496 <   -:  -------- Add option to quit Apollo from webpage w/ hide tray menu controls
+ 46:  7d55bd6d <   -:  -------- Update README
+ 47:  a07b4db8 <   -:  -------- Update README
+ 48:  94e05421 <   -:  -------- Ignore line ending change in version generation
+ 49:  29e20eb0 <   -:  -------- Correctly exit from web request
+ 50:  ad42ef41 <   -:  -------- Make config page navbar less wide
+ 51:  19630a9c <   -:  -------- Pin current display when monitors are added/removed
+ 52:  70fbd269 <   -:  -------- Add server one time pin support to nvhttp
+ 53:  86e70761 <   -:  -------- Add the missing colon
+ 54:  b8d3ebb2 <   -:  -------- Implement OTP page in config
+ 55:  f999f336 <   -:  -------- Update version check logic
+ 56:  184f5d8a <   -:  -------- Save device correctly when pairing with OTP
+ 57:  096e8ac6 <   -:  -------- Fix #12
+ 58:  36b1a156 <   -:  -------- Fix security risk in pairing process w/ add device name for OTP pair
+ 59:  166a0791 <   -:  -------- Fix the ambiguous place where "find cover" places Fix #18
+ 60:  e6e8e8d0 <   -:  -------- Shorten the feed-dog interval
+ 61:  07567904 <   -:  -------- Update README
+ 62:  16217967 <   -:  -------- Fix version check logic
+ 63:  c0e65632 <   -:  -------- Update README
+ 64:  652661ea <   -:  -------- Change login from http basic auth to cookies
+ 65:  1c217d95 <   -:  -------- Minor UI improvements
+ 66:  f58c1eab <   -:  -------- Add expire time to auth cookies
+ 67:  d4168869 <   -:  -------- Add Deep Link support
+ 68:  6e407578 <   -:  -------- Add QR code pairing
+ 69:  1f6003f7 <   -:  -------- Notify user about app quit too fast instead of exiting the stream directly when `auto_detach` is enabled
+ 70:  4353599b <   -:  -------- MISC
+ 71:  538a64a9 <   -:  -------- fix(win/video): don't offload chroma subsampling math to texture sampler when downscaling (#3014)
+ 72:  d332f1da <   -:  -------- Do not alert when restart from webUI gets any other responses
+ 73:  49adbd09 <   -:  -------- Workaround HDR being captured as SDR issue
+ 74:  da773627 <   -:  -------- Add more delay before resetting HDR
+ 75:  6f20cf91 <   -:  -------- fix(win/input): use active keyboard layout for non-normalized key events (#3125)
+ 76:  f22e02cf <   -:  -------- Set HDR of screen according to client request
+ 77:  47cb9e29 <   -:  -------- Update README
+ 78:  c2aefb2a <   -:  -------- fix(ui-apps): update game db url (#3148)
+ 79:  f9b9a766 <   -:  -------- Add webui config for following client HDR settings
+ 80:  d5d3b47c <   -:  -------- Adjust position of "output" in apps.html
+ 81:  fd037c48 <   -:  -------- Update driver
+ 82:  6f012a14 <   -:  -------- More graceful(?) HDR reset routine Modified from https://github.com/FrogTheFrog/Sunshine/blob/b6f8573d35eff7c55da6965dfa317dc9722bd4ef/src/platform/windows/display_device/windows_utils.cpp
+ 83:  c390e91b <   -:  -------- Add save password option on login page w/ clients card on index
+ 84:  8a853671 <   -:  -------- Reset initial_display and initial_hdr when terminate
+ 85:  def6a485 <   -:  -------- Revert commit-lint.yaml, zh.json
+ 86:  a7b5c936 <   -:  -------- Jump to PIN directly from tray pairing message
+ 87:  2d084ed6 <   -:  -------- Add notification for OTP pair
+ 88:  df7c742c <   -:  -------- Implement server commands through control stream
+ 89:  1a3da395 <   -:  -------- Update moonlight-common-c
+ 90:  83dfea5d <   -:  -------- Add default server cmd for demonstration
+ 91:  258b31c8 <   -:  -------- Remove workflows
+ 92:  74e079bd <   -:  -------- Launch server cmd in a new thread to prevent deadlock after sleep commands
+ 93:  50c6e5bc <   -:  -------- Add help link to Server Commands
+ 94:  a545463b <   -:  -------- Add instruction about how to start multiple Apollo instances
+ 95:  af7fca13 <   -:  -------- Fix build for Linux
+ 96:  cec34600 <   -:  -------- Fix README
+ 97:  2617b17a <   -:  -------- Add option to disable pairing
+ 98:  80ea11b8 <   -:  -------- Try fix get_local_ip_for_gateway for Linux
+ 99:  b29ed4c6 <   -:  -------- Prepare for adding permission system
+100:  2185c4f2 <   -:  -------- Fix frame capture and output duplication for dual GPU setups and virtual displays
+101:  d470cc7d <   -:  -------- Check all pixels instead
+102:  d9bd8e2d <   -:  -------- clang fixes
+103:  56dedbde <   -:  -------- code review suggestions
+104:  9a1bfebd <   -:  -------- attempt to match previous coding styles
+105:  b9069cd9 <   -:  -------- remove else statements
+106:  f8d14ac0 <   -:  -------- remove code changes that were not needed
+107:  026c2aeb <   -:  -------- move unmap to fail guard
+108:  7dc2d41b <   -:  -------- implement cgutmans ideas
+109:  6d8f5b22 <   -:  -------- clang fixes
+110:  431a7f6b <   -:  -------- fix documentation
+111:  bae2d308 <   -:  -------- Update tools/ddprobe.cpp
+112:  6f71f42d <   -:  -------- more doc fixes
+113:  7257b188 <   -:  -------- Update tools/ddprobe.cpp
+114:  b733d2b9 <   -:  -------- implement suggestions from cgutman
+115:  c0fdc320 <   -:  -------- add an additional space
+116:  68235953 <   -:  -------- fix compliler errors
+117:  4bdae9cf <   -:  -------- make sonarcloud happy again
+118:  aac75c08 <   -:  -------- Prepare for adding permission system
+119:  2f105081 <   -:  -------- Fix typo in locale
+120:  4a0d425b <   -:  -------- Get device UUID from local assigned value
+121:  038464ad <   -:  -------- Redirect to login after applied configs
+122:  306b2522 <   -:  -------- Get device name from local value for vdisplay
+123:  aa4d38e9 <   -:  -------- Implement permission management for nvhttp
+124:  2e7bde89 <   -:  -------- Implement permission for stream
+125:  db5790b3 <   -:  -------- Implement permission manage web UI
+126:  0bfbaf28 <   -:  -------- Update README
+127:  d59fafeb <   -:  -------- Fix status code
+128:  bedbf648 <   -:  -------- Fix typo
+129:  51caa4a4 <   -:  -------- Update README
+130:  9bc40eee <   -:  -------- New translations sunshine.json (Russian)
+131:  af8b8fd3 <   -:  -------- Minor UI improvement
+132:  8e8f89d5 <   -:  -------- Launch apps from web UI
+133:  ba22fa9a <   -:  -------- Redirect back to previous page after login
+134:  f8c57be7 <   -:  -------- Fix use-after-free when exiting w/ a pairing session
+135:  2c3a0857 <   -:  -------- Add fallback mode config
+136:  4982074f <   -:  -------- Revert to last known fallback mode when validation failed
+137:  9f012639 <   -:  -------- Add global option for set virtual display as primary display
+138:  81de679f <   -:  -------- Use rundll32.exe for launching URL schemes
+139:  5829bd1c <   -:  -------- Split keyboard and mouse permission (resolves #45)
+140:  a0b2a1c4 <   -:  -------- New translations sunshine.json (Chinese Simplified)
+141:  7e74405a <   -:  -------- Reload page instead of hard code to '/login' when requests failed
+142:  50087cd7 <   -:  -------- Add note about permissions in README
+143:  79c9c232 <   -:  -------- Try fix probing failed issue on some weird systems
+144:  4d5cc526 <   -:  -------- Restore to user configured output name after probing
+145:  80fb7efc <   -:  -------- Add UUID to apps w/ add option to use App's id for virtual display (resolves #48)
+146:  92f27fdc <   -:  -------- Better performance for shaders
+147:  102c7b26 <   -:  -------- Add UUID to app list response
+148:  a32c6bf1 <   -:  -------- Report 0 permission if unpaired or requested serverinfo from HTTP
+149:  e3ea8ddc <   -:  -------- Add learn more link to device management section
+150:  349bd404 <   -:  -------- Add warning to device management section
+151:  c72fb454 <   -:  -------- Update README
+152:  1ae7157b <   -:  -------- Add Windows clipboard support
+153:  517e88b6 <   -:  -------- Update README
+154:  03995d6f <   -:  -------- Lower MAC address not found warning on Windows to debug (resolves #63)
+155:  d8b98e49 <   -:  -------- Correctly log config values
+156:  d511cf64 <   -:  -------- Remove issue template and workflow
+157:  3510a07c <   -:  -------- Remove unnecessary move for pod type
+158:  0e50970b <   -:  -------- Fix clipboard codepage conversion
+159:  f4640c6a <   -:  -------- Adjust notice about HDR
+160:  5582e618 <   -:  -------- build(deps-dev): bump the dev-dependencies group across 1 directory with 4 updates
+161:  90ed57ee <   -:  -------- [nvenc] Enable Intra Refresh
+162:  11e0bad4 <   -:  -------- Add option for intra refresh (resolves #86)
+163:  d46aecce <   -:  -------- Rename code page conversion methods
+164:  551999be <   -:  -------- Maybe resolves #84
+165:  47cd8727 <   -:  -------- Also set locale for boost::filesystem::path
+166:  dcbed39f <   -:  -------- Revert dependabot upgrade
+167:  d91b86b4 <   -:  -------- Revert "build(deps): migrate from curl to curl-winssl on Windows (#3246)"
+168:  71d90dd4 <   -:  -------- Fix login page
+169:  b913d975 <   -:  -------- Show alert for checking client permission
+170:  a5ac2bd8 <   -:  -------- Update README
+171:  9ac9c184 <   -:  -------- Fix build
+172:  7d3b6956 <   -:  -------- Fix password is always saved issue #130
+173:  955cc1c2 <   -:  -------- Updated README.md
+174:  07e7f4c6 <   -:  -------- Only show SudoVDA driver message on Windows
+175:  50d3d937 <   -:  -------- Comment out LizardByte's site on resources page
+176:  7415f614 <   -:  -------- Update intra refresh default `disabled` text to `auto`
+177:  281e1859 <   -:  -------- Update dependency
+178:  ae4dfeaa <   -:  -------- Add <list> include to rtsp.h
+179:  d19906b7 <   -:  -------- Actually follow user's choice for broadcasting encoder support when first connecting with headless mode
+180:  36e2e1f8 <   -:  -------- SudoVDA Driver signature update
+181:  7d0456e8 <   -:  -------- Update README about HDR
+182:  b2ca7fde <   -:  -------- Update README.md
+183:  fcbdaed1 <   -:  -------- Fix build (Never wanna merge again)
+184:  4b78e3b4 <   -:  -------- Migrate virtual display config to new Display Device API
+185:  a3c8c937 <   -:  -------- Update locales
+186:  c4e9ceea <   -:  -------- Rotate logs
+187:  efb25995 <   -:  -------- Add a space before virtual display notice in display device config
+188:  98fb23ca <   -:  -------- Update linux_build.sh
+189:  6f9527a0 <   -:  -------- Update README
+190:  e769c7e0 <   -:  -------- Fix typo in README
+191:  c724d30d <   -:  -------- Restore old HDR workaround
+192:  57171c33 <   -:  -------- Hash cookies
+193:  9e4389fe <   -:  -------- Update README
+194:  55b76ed9 <   -:  -------- Fix header
+195:  791b2540 <   -:  -------- Fix output_name not working
+196:  0b2ca076 <   -:  -------- Update README
+197:  a63b0892 <   -:  -------- Fix all display being enabled when virtual display quits The inclusion of libdisplaydevice further complicated the already messy display configuration thing...
+198:  088d0006 <   -:  -------- Add notice for HDR not supported on Windows 10
+199:  dfa39abf <   -:  -------- Do not change resolution on resume when current session is using virtual display
+200:  4705783e <   -:  -------- Update text warning for multi instances
+201:  bdc17dfd <   -:  -------- Remove display persistence file on bootup if it's set to disabled
+202:  f4e445a5 <   -:  -------- Trim input for app name
+203:  4403cff3 <   -:  -------- Per client DO/UNDO commands server part - done
+204:  d5f81773 <   -:  -------- Per client DO/UNDO commands frontend part - done
+205:  5aaeb707 <   -:  -------- Add option to enable/disable client commands per-app
+206:  f85eab98 <   -:  -------- Disable client commands on built-in virtual display app
+207:  8433eaa8 <   -:  -------- Update driver
+208:  8a20264c <   -:  -------- Implement per-client app identity
+209:  6a8b263b <   -:  -------- Update FAQ
+210:  e89354e4 <   -:  -------- Log fail reason for pair attempt
+211:  b63d93b3 <   -:  -------- Update info text for disabling advanced display device config
+212:  fb2008c3 <   -:  -------- Fix some Chinese translations
+213:  7b653280 <   -:  -------- Default to disable dd_configuration_option
+214:  2fb79e1c <   -:  -------- Log the final pair rejection
+215:  f9ed7c31 <   -:  -------- Fix localization for per-client-app-identity
+216:  94b636f3 <   -:  -------- Disable client commands for Desktop entry by default w/ auto close Steam Big Picture by default
+217:  e1f7e58a <   -:  -------- Update FAQ
+218:  038e118c <   -:  -------- Update README for game auto suspension
+219:  2e38a264 <   -:  -------- Fix localization for per-client-app-identity (again)
+220:  ff667ec8 <   -:  -------- Fix build for Linux
+221:  257e48a8 <   -:  -------- Fix Linux build and some typos
+222:  c2c9cd23 <   -:  -------- Fix Linux build and some typos
+223:  8b005343 <   -:  -------- Add encoding frame rate limit
+224:  6d8d0634 <   -:  -------- Terminate early when hang in encoder is detected
+225:  e0d81d3c <   -:  -------- Fixing the extra comma in (win) default apps
+226:  23dd06b3 <   -:  -------- Implement input only mode w/ double framerate for virtual display
+227:  bf78a338 <   -:  -------- Implement frontend part for Input Only Mode. Resolves #177
+228:  1c8bd0cd <   -:  -------- Implement frontend part for Double refreshrate. Resolves #299
+229:  5c36b891 <   -:  -------- Add input only image
+230:  9c5c90e6 <   -:  -------- Fully prevent client commands on input only sessions
+231:  88be28c3 <   -:  -------- Refine app resume logic when enabled input only mode
+232:  68d1b5ce <   -:  -------- Fix doubled fps not applied on common resolutions
+233:  786fadb9 <   -:  -------- Rename Input Only to Remote Input
+234:  eb3a7641 <   -:  -------- Fix #329
+235:  75824e8d <   -:  -------- Add a dedicated "Terminate" entry when using input only mode
+236:  78714e65 <   -:  -------- Fix build
+237:  57086223 <   -:  -------- Fix dd_mode_remapping
+238:  9f33b3f7 <   -:  -------- Add more fields to be migrated in apps.json
+239:  7757e28c <   -:  -------- Fix prep command adding order in apps
+240:  b896f683 <   -:  -------- Fix ffmpeg
+241:  773a8b65 <   -:  -------- Update deps
+242:  9481418e <   -:  -------- Fix launch app says failed on web ui
+243:  58bbfc3e <   -:  -------- Show running app in Apps page
+244:  343427f2 <   -:  -------- Add default value indicator to use-app-identity and per-client-app-identity
+245:  137845f8 <   -:  -------- Use Sunshine encoder hang workaround
+246:  dca9092a <   -:  -------- Fix #345
+247:  50e9b2f7 <   -:  -------- Potentially fix avcodec
+248:  e35f9fac <   -:  -------- Update SudoVDA
+249:  6489c554 <   -:  -------- Check whether certutil is in PATH
+250:  c9d336f4 <   -:  -------- Update driver
+251:  09d7a1ef <   -:  -------- Add default UUID for built-in apps
+252:  e35fc852 <   -:  -------- Bring back Auto toggle HDR without using DD methods but DD options
+253:  014ad182 <   -:  -------- Don't request doubled refresh rate - the new SudoVDA driver already created the doubled mode
+254:  8f5682c1 <   -:  -------- Remove `Resume` prefix for MoonDeckStream to be able to resume
+255:  51602b1c <   -:  -------- Try migrate again if the apps.json is still somehow invalid
+256:  c6127ed0 <   -:  -------- Server: implement per-device display mode override
+257:  6f35d52c <   -:  -------- WebUI: implement per-device display mode override
+258:  e109bd1f <   -:  -------- Better fractional refresh rates handling
+259:  20f319f7 <   -:  -------- Update driver
+260:  ac754ba2 <   -:  -------- Update README
+261:  11a4f588 <   -:  -------- Update driver Windows 10 fix
+262:  ad9c534e <   -:  -------- Frame limiter v2 - better frame pacing
+263:  d837e750 <   -:  -------- Update locale for client FPS env var
+264:  3ae4c881 <   -:  -------- Even better frame pacing
+265:  a6097e69 <   -:  -------- Handle weird boolean leftover from previous config files
+266:  5f26ea5c <   -:  -------- Adding template image for applications
+267:  0785e061 <   -:  -------- Properly translates pt-br texts
+268:  63304e01 <   -:  -------- Update pt_BR.json
+269:  752ca544 <   -:  -------- Update pt_BR.json
+270:  6989de63 <   -:  -------- Update pt_BR.json
+271:  4e3c9466 <   -:  -------- Adds missing entries pending translation
+272:  d80d77aa <   -:  -------- Fix some typos on english version
+273:  3f96deff <   -:  -------- Finish translating extra locale entries
+274:  68792869 <   -:  -------- Best frame pacing ever
+275:  9a217ed1 <   -:  -------- Fix refresh rate for libdisplaydevice
+276:  52a4cf97 <   -:  -------- Full translation of English to Swedish (sv)
+277:  a2e3d249 <   -:  -------- Turn off tests and documents by default
+278:  e2715924 <   -:  -------- Handle char encoding on logs more correctly
+279:  535a89b2 <   -:  -------- Potentially fixes #566
+280:  b8e614a3 <   -:  -------- Fix logging started from shortcut
+281:  24cc6d3b <   -:  -------- Add `Stuttering Clinic` section README.md
+282:  2d6bc483 <   -:  -------- Update README.md
+283:  76bf591c <   -:  -------- Fix client fps
+284:  9cc0bc92 <   -:  -------- Track modified settings
+285:  117c0bd5 <   -:  -------- Minor Windows Compile / Packaging / Run issues when compiling from scratch (#604)
+286:  23d92277 <   -:  -------- Fix encoding bitrate when client requested fractional fps
+287:  d784a093 <   -:  -------- Fix apply button in config.html
+288:  26b8446b <   -:  -------- Add link to WiKi in resources cards
+289:  56646c2a <   -:  -------- Add option to configure auto discovery(mDNS) resolves #539 potentially resolves #611
+290:  45588e57 <   -:  -------- Fix favicon
+291:  e5a3333e <   -:  -------- Update SudoVDA
+292:  a16512ad <   -:  -------- Fix typo in contributing.md: correct "Vus.js" to "Vue.js" Closes Typo in Contribution Guidelines #628
+293:  94feb2bd <   -:  -------- Update README.md
+294:  9c4e0a0f <   -:  -------- Fix default apps.json
+295:  91467d50 <   -:  -------- BREAKING: SUNSHINE_CLIENT_FPS is now float (for better integration with Special-K)
+296:  69e999d2 <   -:  -------- Add option to toggle envvar compatibility mode
+297:  6ee5f4ed <   -:  -------- Update envvars
+298:  6c7962b6 <   -:  -------- Add `APOLLO_APP_UUID` envvar
+299:  e231803e <   -:  -------- Update apps loading logic
+300:  8aff38cf <   -:  -------- Automatically use virtual display if no active display is detected
+301:  071f500f <   -:  -------- Ensure virtual display is removed even when we failed to get its name
+302:  6b45f75d <   -:  -------- Create a temporary virtual display to probe encoders when no active display is present
+303:  00c25287 <   -:  -------- Make sure to use the desired GPU when probing encoders with virtual display
+304:  96968b8b <   -:  -------- Add app index
+305:  1798887e <   -:  -------- Support launching app with UUID
+306:  08eee868 <   -:  -------- Use DXGI methods to get HDR state
+307:  8298149d <   -:  -------- Fix the missing locale
+308:  47686b51 <   -:  -------- Add some verbose logs
+309:  2b86bc54 <   -:  -------- Support Reordering apps(requires Artemis)
+310:  bcb3e0c8 <   -:  -------- Fix #724
+311:  93540b97 <   -:  -------- Update tray message from no apps running to reload apps
+312:  98a35b81 <   -:  -------- Don't show apps without UUID in the WebUI
+313:  b0871a9a <   -:  -------- Add gamepad override for each app
+314:  12f3ba2d <   -:  -------- Add the option to always have the virtual display be an isolated display - Windows only (#662)
+315:  6571c110 <   -:  -------- Various webui fix fixes #742 Add save button for reordering instead of auto saving
+316:  a1ecd257 <   -:  -------- Bump boost to 1.88.0
+317:  1e71cc06 <   -:  -------- Make clang happy
+318:  542c4e31 <   -:  -------- misc
+319:  03194a6f <   -:  -------- UCRT64 C++15 workaround (closes #753)
+320:  b2ec0483 <   -:  -------- Fix WebUI
+321:  f3d2078b <   -:  -------- Add content-type to sent requests
+322:  a3e03187 <   -:  -------- Validate application/json on server side
+323:  4030680f <   -:  -------- App ordering support for legacy clients
+324:  d89f3f75 <   -:  -------- Add alphabetize button to app list
+325:  251ae915 <   -:  -------- Alert for already alphabetized
+326:  2f89d85f <   -:  -------- Add legacy ordering support toggle for each client
+327:  2d0e5c7c <   -:  -------- Enable legacy ordering and client commands by default for newly paired clients
+328:  34766201 <   -:  -------- Remove trialing space in process.cpp
+  -:  -------- >   1:  74e4e6cd build(deps): bump third-party/build-deps from `c38829d` to `2840c8a` (#4307)
+  -:  -------- >   2:  c4e5a69c build(packaging/homebrew): Rename class from @PROJECT_NAME@ to Sunshine (#4308)
+  -:  -------- >   3:  c16f0add build(deps): bump LizardByte/actions from 2025.917.25039 to 2025.927.193939 in the lizardbyte-actions group (#4309)
+  -:  -------- >   4:  b97b742e build(deps): bump LizardByte/actions from 2025.927.193939 to 2025.929.125237 in the lizardbyte-actions group (#4313)
+  -:  -------- >   5:  8372c370 fix(linux): service file for Trixie (#4319)
+  -:  -------- >   6:  f52891d6 build(linux): static link std libraries (#4321)
+  -:  -------- >   7:  ed7b78f1 build(linux): enable cpack auto dependencies (#4323)
+  -:  -------- >   8:  246d8f17 build(linux): explicitely set CC and CXX compilers (#4325)
+  -:  -------- >   9:  fbcf2116 feat(audio): allow sending continuous audio (#4261)
+  -:  -------- >  10:  8dd75c48 build(deps): bump LizardByte/actions from 2025.929.125237 to 2025.1011.184228 in the lizardbyte-actions group (#4327)
+  -:  -------- >  11:  6ed0c7a8 feat(fps): support x-nv-video[0].clientRefreshRateX100 for requesting fractional NTSC framerates (#4019)
+  -:  -------- >  12:  08454f73 build(deps): bump third-party/build-deps from `2840c8a` to `1dd1b68` (#4326)
+  -:  -------- >  13:  a8e03a29 fix(web-ui): translation function in DisplayOutputSelector label (#4328)
+  -:  -------- >  14:  179c01a2 build(deps): bump actions/setup-node from 5 to 6 in the github-actions group (#4334)
+  -:  -------- >  15:  56246378 build(deps): bump LizardByte/actions from 2025.1011.184228 to 2025.1020.14905 in the lizardbyte-actions group (#4347)
+  -:  -------- >  16:  0b6b9e41 build(deps): bump packaging/linux/flatpak/deps/shared-modules from `231e052` to `6537464` (#4346)
+  -:  -------- >  17:  8df1003b build(deps): bump third-party/build-deps from `1dd1b68` to `6c9ec34` (#4345)
+  -:  -------- >  18:  7ecb7817 build(rpm): Update Fedora spec and CUDA math_functions.h patch for Fedora 43+ (#4353)
+  -:  -------- >  19:  d3af56d6 fix(windows): Memory leak when EnumAdapters1 uses dxgi::adapter_t address as parameter (#4340)
+  -:  -------- >  20:  502f3e14 build(deps): bump the github-actions group with 2 updates (#4356)
+  -:  -------- >  21:  0b3978eb build(rpm): add OpenSUSE support (#4359)
+  -:  -------- >  22:  c2fb5438 ci(copr): fix release event conditions (#4360)
+  -:  -------- >  23:  a7f03c25 ci: move bundle analysis to separate job (#4361)
+  -:  -------- >  24:  f1a66753 fix(config): ensure apps.json is writeable (#4249)
+  -:  -------- >  25:  e657df0c chore(l10n): update translations (#4302)
+  -:  -------- >  26:  01a6dfd1 build(deps): bump LizardByte/actions from 2025.1020.14905 to 2025.1028.23217 in the lizardbyte-actions group (#4365)
+  -:  -------- >  27:  dbe38ba2 build(flatpak): update org.freedesktop.Platform version (#4382)
+  -:  -------- >  28:  39775725 docs(readme): Update for clarity and image sources (#4384)
+  -:  -------- >  29:  3d2fca7c build(deps): bump third-party/Simple-Web-Server from `187f798` to `546895a` (#4370)
+  -:  -------- >  30:  875ad1d1 build(deps): bump boost to 1.89 (#4253)
+  -:  -------- >  31:  355078a6 build(deps): bump third-party/build-deps from `6c9ec34` to `bcaf64b` (#4375)
+  -:  -------- >  32:  eb72930a build(deps): bump packaging/linux/flatpak/deps/shared-modules from `6537464` to `8d705c8` (#4385)
+  -:  -------- >  33:  cdb7e2b8 feat(video): use unified color conversion matrix generator (#4387)
+  -:  -------- >  34:  f8bda880 build(deps): bump third-party/build-deps from `bcaf64b` to `ca3f2da` (#4392)
+  -:  -------- >  35:  8836db5d fix(config): Add missing framerateX100 fields at the initializers for the video::config_t literals (#4391)
+  -:  -------- >  36:  49197c71 fix(video): fix leaky abstraction in ogl luma shader (#4404)
+  -:  -------- >  37:  2dbe837e build(deps): bump third-party/moonlight-common-c from `5f22801` to `2d984f4` (#4409)
+  -:  -------- >  38:  1d6d916b build: add freebsd support (#4049)
+  -:  -------- >  39:  852dee0a fix(launch): Fix several launch failure conditions (exceptions thrown in child.wait, and boost::split_unix) (#4390)
+  -:  -------- >  40:  a2e6fc9f ci: harden workflows (#4412)
+329:  d293fee8 !  41:  adb443f0 Set capture_session.MinUpdateInterval for WGC capture
+    @@
+      ## Metadata ##
+    -Author: Danim <57731531+danielmartina@users.noreply.github.com>
+    +Author: StringWeaver <55291103+StringWeaver@users.noreply.github.com>
+     
+      ## Commit message ##
+    -    Set capture_session.MinUpdateInterval for WGC capture
+    -
+    -    Resolves 60 fps lock issue for WGC capture
+    +    fix(win): Windows.Graphics.Capture API frame rate capped at 60fps (#4424)
+     
+      ## src/platform/windows/display_wgc.cpp ##
+     @@ src/platform/windows/display_wgc.cpp: namespace platf::dxgi {
+    @@ src/platform/windows/display_wgc.cpp: namespace platf::dxgi {
+          }
+     +    try {
+     +      if (winrt::ApiInformation::IsPropertyPresent(L"Windows.Graphics.Capture.GraphicsCaptureSession", L"MinUpdateInterval")) {
+    -+        capture_session.MinUpdateInterval(winrt::TimeSpan{ 10000 });
+    -+      }
+    -+      else {
+    -+        BOOST_LOG(warning) << "Can't set MinUpdateInterval";
+    ++        capture_session.MinUpdateInterval(4ms);  // 250Hz
+    ++      } else {
+    ++        BOOST_LOG(warning) << "Can't set MinUpdateInterval on this version of Windows";
+     +      }
+    -+    }
+    -+    catch (winrt::hresult_error &e) {
+    -+      BOOST_LOG(warning) << "Screen capture may not be fully supported on this device for this release of Windows: failed to set MinUpdateInterval: [0x"sv << util::hex(e.code()).to_string_view() << ']';
+    ++    } catch (winrt::hresult_error &e) {
+    ++      BOOST_LOG(warning) << "Screen capture may be capped to 60fps on this device for this release of Windows: failed to set MinUpdateInterval: [0x"sv << util::hex(e.code()).to_string_view() << ']';
+     +    }
+          try {
+            capture_session.StartCapture();
+330:  1ca19853 <   -:  -------- Fix encoder probing when no display is active
+331:  26f143fa <   -:  -------- Update Boost hash to version 1.88.0
+332:  246994da <   -:  -------- Fix build problems on Linux
+333:  e5217670 <   -:  -------- Fix launching remote input only with UUID
+334:  d316b272 <   -:  -------- Add terminate on pause option for apps (resolves #801)
+335:  cb74eb63 <   -:  -------- Fix boost version for flatpak
+336:  2795e34e <   -:  -------- Move HDR options out of display device options
+337:  3e0cbaf2 <   -:  -------- Implement pause/resume commands w/ APOLLO_APP_STATUS envvar
+338:  f2628528 <   -:  -------- Add always use virtual display option for clients
+339:  0f9e7aa1 <   -:  -------- WebUI: Support starting apps from local client
+340:  e15eec1f <   -:  -------- Add .art file export w/ optimize app list page
+341:  f174c777 <   -:  -------- Fix #813
+342:  0c3d1b6b <   -:  -------- Try fix #814
+343:  6c7f07dd <   -:  -------- Auto terminate input only session
+344:  cd911704 <   -:  -------- Nyquist-Shannon
+345:  7a6761b3 <   -:  -------- Update es.json
+346:  09446354 <   -:  -------- Update es.json
+347:  e4ebb4d5 <   -:  -------- Update es.json
+348:  54cb7ece <   -:  -------- Added option to disable rumble from the Apollo side
+349:  576fc4bc <   -:  -------- Change logic to enable/disable rumble functionality
+350:  8509611c <   -:  -------- Fix build
+351:  da5a4e3e <   -:  -------- Remove workflows
+352:  1ad24d2d <   -:  -------- Update SudoVDA's certificate
+353:  f5908081 <   -:  -------- Update key name for rumble forwarding
+354:  90c8eed1 <   -:  -------- Add CONTRIBUTING.md
+355:  4f6334ab <   -:  -------- Fix welcome.html
+356:  2a97b3cb <   -:  -------- Fix API requests content type
+357:  fae6da3f <   -:  -------- Fix warp modes w/ reduce stutters
+358:  1fd920ef <   -:  -------- Add option to ignore encoder probe failure
+359:  95c61a2b <   -:  -------- Always create temporary virtual display when initial probing fails
+360:  9753a996 <   -:  -------- Straighten logic when probing for encoders
+361:  05c7bbc3 <   -:  -------- Revert libdisplaydevice to last known working version
+362:  53aa222e <   -:  -------- Revert `build-deps` to last known working version
+363:  1a87a6bd <   -:  -------- Change `build-deps` and `libdisplaydevice` back
+364:  c4b7e8a4 <   -:  -------- Revert project fqdn for Linux builds
+365:  6c955482 <   -:  -------- Stablize encode timing
+366:  d25f2413 <   -:  -------- Set a automatic value for min_fps_target resolves #942 resolves #956 resolves #982
+367:  8cf18b19 <   -:  -------- Fix Spanish locale resolves #969
+368:  0cd32aba <   -:  -------- Enforce doubled refresh rate resolves #966
+369:  5af771d2 <   -:  -------- Priority hack
+370:  d19ca77d <   -:  -------- Remove unused var
+371:  f8c690c1 <   -:  -------- Update moonlight-common-c
+372:  0ba69839 <   -:  -------- Fix typo in README Closes #1069
+373:  1fd310b5 <   -:  -------- Make capture time more elastic
+374:  db4c2fab <   -:  -------- Update boost
+375:  38129878 <   -:  -------- Update locale
+376:  f83ac60e <   -:  -------- Apply theme to login page closes #1094
+377:  176678ad <   -:  -------- Fix typo in README regarding client devices
+378:  6d0eaa8e <   -:  -------- Correct frame timestamp initialization and update logic
+379:  09e848c3 <   -:  -------- Update README for more install methods merges #1188
+380:  2d8544cf <   -:  -------- Fix typo in README
+381:  a8a9059c <   -:  -------- Update Apollo installation command in README
+382:  7ec7566a <   -:  -------- Fix state file corruption when saving user credentials
+383:  52000d05 <   -:  -------- fix(wayland): set frame timestamps for wlgrab captures
+384:  2aa5a396 <   -:  -------- fix(vaapi): enable rate control buffer and explicit rc_mode for VAAPI encoders
+385:  e417eb96 <   -:  -------- Testing things
+386:  e57eb167 <   -:  -------- fallback
+387:  8c21b31c <   -:  -------- dwa
+388:  fb9e31cc <   -:  -------- nvenc changes
+389:  132f76d6 <   -:  -------- multipane
+390:  0e15dfef <   -:  -------- fix
+391:  1ee3f023 <   -:  -------- d
+392:  8831b53d <   -:  -------- f
+393:  99595263 <   -:  -------- enc
+  -:  -------- >  42:  b169d304 build(deps): bump vmactions/freebsd-vm from 1.2.6 to 1.2.7 (#4425)
+  -:  -------- >  43:  d0aefe05 chore(l10n): update translations (#4386)
+  -:  -------- >  44:  fe075018 build(packaging/Arch): fix cuda gcc version detection (#4442)
+  -:  -------- >  45:  036e14d0 build(deps): bump third-party/tray from `0309a7c` to `d43f4c2` (#4445)
+  -:  -------- >  46:  5f424844 build(deps): bump third-party/wayland-protocols from `0091197` to `6141e11` (#4446)
+  -:  -------- >  47:  915ba74f build(deps): bump third-party/build-deps from `ca3f2da` to `afe70fa` (#4447)
+  -:  -------- >  48:  7d887bc7 build(arch): temporarily disable broken Arch build (#4451)
+  -:  -------- >  49:  3191e48a build(deps): bump third-party/moonlight-common-c from `2d984f4` to `b126e48` (#4452)
+  -:  -------- >  50:  2c346300 build(deps): bump vue-i18n from 11.1.12 to 11.2.2 (#4454)
+  -:  -------- >  51:  a1ff239b build(deps): bump vue from 3.5.22 to 3.5.25 (#4444)
+  -:  -------- >  52:  83afe791 build(deps): bump actions/checkout from 5 to 6 in the github-actions group (#4435)
+  -:  -------- >  53:  56b7573a build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `ea92dc2` to `fdbe66a` (#4443)
+  -:  -------- >  54:  62d58ed6 build(deps): bump packaging/linux/flatpak/deps/shared-modules from `8d705c8` to `3456e75` (#4431)
+  -:  -------- >  55:  f1f9e755 fix(tray): use the blocking event loop to avoid wasting power (#4457)
+  -:  -------- >  56:  a0a97138 build(deps): bump vmactions/freebsd-vm from 1.2.7 to 1.2.8 (#4463)
+  -:  -------- >  57:  4d2391c9 ci(homebrew): enable test coverage on Linux (#3842)
+  -:  -------- >  58:  7c6e43fb ci(windows): Remove unused test preparation (#4467)
+  -:  -------- >  59:  f2441925 ci(homebrew): free runner space on Linux (#4477)
+  -:  -------- >  60:  d46ead6b build(deps): bump third-party/build-deps from `afe70fa` to `d65e305` (#4472)
+  -:  -------- >  61:  35f4b9ee build(linux): add support for self-compiling on ubuntu 25.10 (#4471)
+  -:  -------- >  62:  75809f13 ci(linux): migrate Archlinux build to GitHub workflow (#4478)
+  -:  -------- >  63:  446e0a52 build(tests): static link libgcc and libstdc++ on Linux (#4485)
+  -:  -------- >  64:  eb3afd43 build(homebrew): Run test_sunshine and coverage only for main repo (#4491)
+  -:  -------- >  65:  79b4b9f6 style(Homebrew): Update Homebrew formula dependencies and conflicts (#4484)
+  -:  -------- >  66:  36722546 fix: namespace declaration for boost::process::v1 (#4518)
+  -:  -------- >  67:  d3d26f34 chore: change libevdev source to LizardByte mirror (#4524)
+  -:  -------- >  68:  1fa7457e chore(homebrew): add bottle do section placeholder (#4525)
+  -:  -------- >  69:  0aa7e3fd feat(network): allow binding to specific interface (#4481)
+  -:  -------- >  70:  e0edccb5 build(deps): bump the github-actions group across 1 directory with 3 updates (#4503)
+  -:  -------- >  71:  bc7b534f chore: update global workflows (#4486)
+  -:  -------- >  72:  551799cb build(deps): bump vmactions/freebsd-vm from 1.2.8 to 1.3.0 (#4489)
+  -:  -------- >  73:  1d21bac0 build(deps): bump peter-evans/create-pull-request from 7 to 8 (#4496)
+  -:  -------- >  74:  2711d764 build(deps): bump packaging/linux/flatpak/deps/shared-modules from `3456e75` to `72028a8` (#4517)
+  -:  -------- >  75:  39cb19df build(deps): bump LizardByte/actions from 2025.1221.31807 to 2025.1224.155016 in the lizardbyte-actions group across 1 directory (#4533)
+  -:  -------- >  76:  f5fa599c build(deps): bump vue from 3.5.25 to 3.5.26 (#4522)
+  -:  -------- >  77:  e989f2a7 build(deps): bump vue-i18n from 11.2.2 to 11.2.7 (#4529)
+  -:  -------- >  78:  d4e36e9c build(deps): bump third-party/wayland-protocols from `6141e11` to `8822301` (#4513)
+  -:  -------- >  79:  ca7b52fe build(deps): bump third-party/build-deps from `d65e305` to `814fa85` (#4526)
+  -:  -------- >  80:  a44c1521 chore(l10n): update translations (#4497)
+  -:  -------- >  81:  b3a77826 ci(homebrew): fix formula version patch (#4535)
+  -:  -------- >  82:  3e23087b ci(homebrew): fix livecheck patch (#4538)
+  -:  -------- >  83:  72d6b0de build(deps): bump LizardByte/actions from 2025.1224.155016 to 2025.1227.191137 in the lizardbyte-actions group across 1 directory (#4541)
+  -:  -------- >  84:  2e68762e build(Archlinux): Update GCC version in PKGBUILD to 15 (#4546)
+  -:  -------- >  85:  5bacfd59 fix(nvenc): Include bitstream restrictions in H.264/HEVC SPS (#4556)
+  -:  -------- >  86:  c9e0bb86 build(packaging): bash comparison in PKGBUILD (#4565)
+  -:  -------- >  87:  4a9f1741 build(vaapi): Add vaMapBuffers2() stub (#4581)
+  -:  -------- >  88:  f4df598f ci: run workflows for any branch (#4584)
+  -:  -------- >  89:  7f536ea9 build(deps): bump third-party/build-deps from `814fa85` to `4463f7a` (#4578)
+  -:  -------- >  90:  18adbf7b build(deps): bump third-party/moonlight-common-c from `b126e48` to `435bc6a` (#4576)
+  -:  -------- >  91:  b281f4e6 build(deps): bump vmactions/freebsd-vm from 1.3.0 to 1.3.7 (#4574)
+  -:  -------- >  92:  dabf3415 build(deps): bump vue-i18n from 11.2.7 to 11.2.8 (#4553)
+  -:  -------- >  93:  d4f75c65 build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `fdbe66a` to `db39dc0` (#4550)
+  -:  -------- >  94:  8765bbf0 build(deps): bump packaging/linux/flatpak/deps/shared-modules from `72028a8` to `d1a2cf5` (#4575)
+  -:  -------- >  95:  80761601 build(deps): bump LizardByte/actions from 2025.1227.191137 to 2026.116.208 in the lizardbyte-actions group across 1 directory (#4587)
+  -:  -------- >  96:  64005228 build(Archlinux): Switch from calling make directly to using cmake (#4579)
+  -:  -------- >  97:  cf7b0dc7 fix(linux/wlr): Fix dmabuf buffer params protocol violation/leak (#4588)
+  -:  -------- >  98:  8294ab23 fix(config): create apps.json from default after loading file_apps cfg (#4568)
+  -:  -------- >  99:  89e79969 build(linux): Add Fedora 43 support to the build script (#4532)
+  -:  -------- > 100:  2e2f7b6a chore(l10n): update translations (#4548)
+  -:  -------- > 101:  fd2bfaac fix(windows): resolve disappearing cursor after KVM switch (#4407)
+  -:  -------- > 102:  ab52e27e fix(audio-info): crash when device name contains special characters (#4095)
+  -:  -------- > 103:  b0bf5105 fix(macos/input): Fix handling of mouse wheel scroll events (#4592)
+  -:  -------- > 104:  c3138518 fix(linux): added support for logical screen size with zxdg_output_v1 (#4594)
+  -:  -------- > 105:  69d7b6df feat(packaging/linux): enable cuda support for homebrew (#4593)
+  -:  -------- > 106:  d2997308 build(arch): enhanced arch support for linux build script (#4595)
+  -:  -------- > 107:  19a63011 build(windows): fix rc version for llvm clang (#4606)
+  -:  -------- > 108:  ff770d60 build(flatpak): drop libnotify module (#4604)
+  -:  -------- > 109:  aca5d23f fix(linux): fix issues with rendering and touchscreens when displays are scaled (#4607)
+  -:  -------- > 110:  517be368 build(homebrew): optimize build options (#4612)
+  -:  -------- > 111:  aea95126 chore: clean up implicit conversions (#4611)
+  -:  -------- > 112:  f8792944 feat(macos/build): add basic macOS build script based on linux_build.sh (#4598)
+  -:  -------- > 113:  3a12f96a perf(threads): implement adjust_thread_priority for macOS and add set_thread_name (#4605)
+  -:  -------- > 114:  7e286b90 feat(windows): add ViGEmBus driver management API and UI integration (#4625)
+  -:  -------- > 115:  3e2f4c28 feat(web-ui): render changelog for new release sections (#4629)
+  -:  -------- > 116:  5ecf7dc7 feat(web-ui)!: remove discord widget (#4630)
+  -:  -------- > 117:  38a94b3c fix(linux/kms): skip NVIDIA cards for VAAPI on hybrid GPU laptops (#4473)
+  -:  -------- > 118:  2141917d build(deps): bump vue from 3.5.26 to 3.5.27 (#4602)
+  -:  -------- > 119:  76b3a859 feat(api): add application image endpoint (#4627)
+  -:  -------- > 120:  3ce39b36 fix(web-ui): modernize UI (#4631)
+  -:  -------- > 121:  2a31583c chore(l10n): update translations (#4600)
+  -:  -------- > 122:  bd857c2d build(fedora): use nvm to install npm for rawhide (#4646)
+  -:  -------- > 123:  30fed4f9 build(deps): bump third-party/moonlight-common-c from `435bc6a` to `305993b` (#4648)
+  -:  -------- > 124:  37738abf build(deps): bump @lizardbyte/shared-web from 2025.922.181114 to 2026.125.235713 (#4632)
+  -:  -------- > 125:  843d7bf0 build(deps): bump vmactions/freebsd-vm from 1.3.7 to 1.3.8 (#4643)
+  -:  -------- > 126:  20df2172 build(deps): bump third-party/build-deps from `4463f7a` to `4f5e8b2` (#4609)
+  -:  -------- > 127:  9bd9fdce build(deps): bump packaging/linux/flatpak/deps/shared-modules from `d1a2cf5` to `cb06063` (#4644)
+  -:  -------- > 128:  14bcfcd6 build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `db39dc0` to `216a52e` (#4640)
+  -:  -------- > 129:  f59e6aac build(deps): bump LizardByte/actions from 2026.116.208 to 2026.129.194351 in the lizardbyte-actions group across 1 directory (#4647)
+  -:  -------- > 130:  b6757c5e build: add --ignore-scripts to npm install commands (#4655)
+  -:  -------- > 131:  5dbeb74f build(deps): bump LizardByte/actions from 2026.129.194351 to 2026.203.15239 in the lizardbyte-actions group across 1 directory (#4656)
+  -:  -------- > 132:  874880e5 feat(linux)!: Support streaming through XDG portals and Pipewire (#4417)
+  -:  -------- > 133:  db15af20 chore: update GitHub Actions to use commit hashes (#4659)
+  -:  -------- > 134:  66cdaf9d build(deps): bump babel from 2.17.0 to 2.18.0 (#4653)
+  -:  -------- > 135:  d0d581ca build(deps): bump actions/checkout from 6.0.1 to 6.0.2 in the github-actions group across 1 directory (#4663)
+  -:  -------- > 136:  22065bfe build(deps): bump third-party/doxyconfig from `1188ef2` to `89c8ec9` (#4657)
+  -:  -------- > 137:  86557424 build(deps): bump third-party/libdisplaydevice from `f31e46d` to `b46492b` (#4678)
+  -:  -------- > 138:  837c2d48 build(deps): bump packaging/linux/flatpak/deps/shared-modules from `cb06063` to `3d87a66` (#4683)
+  -:  -------- > 139:  76b84be9 build(deps): bump third-party/moonlight-common-c from `305993b` to `6250fa2` (#4682)
+  -:  -------- > 140:  476b984f build(deps): bump vmactions/freebsd-vm from 1.3.8 to 1.4.0 (#4676)
+  -:  -------- > 141:  b48a96f9 fix(linux/xdgportal): populate host latency statistics (#4685)
+  -:  -------- > 142:  bf574afd fix(linux/xdgportal): flag stream as realtime (#4684)
+  -:  -------- > 143:  e2652fa5 refactor(packaging/windows): installer script execution (#4675)
+  -:  -------- > 144:  cdc44431 feat(installer/windows): add wix installer (#3916)
+  -:  -------- > 145:  d5916437 build(windows): add arm64 support (#3905)
+  -:  -------- > 146:  2f611164 revert: "fix(linux/xdgportal): flag stream as realtime" (#4686)
+  -:  -------- > 147:  5bd3a2b2 docs: miscellaneous updates (#4597)
+  -:  -------- > 148:  8aed1a82 build(web-ui): fix rollup failing (#4687)
+  -:  -------- > 149:  97b6168b ci(deps): use codecov-action for test results (#4689)
+  -:  -------- > 150:  e22c5c9e fix(log): prevent sink destruction caused by backend exceptions (#4694)
+  -:  -------- > 151:  fab86338 build(deps): bump vue from 3.5.27 to 3.5.28 (#4696)
+  -:  -------- > 152:  4b1bc6a4 build(deps): bump vmactions/freebsd-vm from 1.4.0 to 1.4.1 (#4690)
+  -:  -------- > 153:  9d062285 build(deps): migrate ffmpeg prebuild to downloaded archive (#4699)
+  -:  -------- > 154:  28a0b3d7 fix(flatpak): Add pipewire access for XDG portal grab (#4704)
+  -:  -------- > 155:  638cd699 fix(linux/xdgportal): improve thread loop (un)locking & teardown logic (#4705)
+  -:  -------- > 156:  f60e2b08 build(deps): bump LizardByte/actions from 2026.203.15239 to 2026.212.22356 in the lizardbyte-actions group across 1 directory (#4706)
+  -:  -------- > 157:  808686c9 build(deps): bump vmactions/freebsd-vm from 1.4.1 to 1.4.2 (#4707)
+  -:  -------- > 158:  9ba27574 build(deps): bump marked from 17.0.1 to 17.0.2 (#4710)
+  -:  -------- > 159:  f442ff81 fix(linux): update systemd service units (#4712)
+  -:  -------- > 160:  941f6453 feat(macos/tray): allow tray icon paths to be set at runtime from .app bundle (#4711)
+  -:  -------- > 161:  2ef66bcc ci: scope workflow permissions to job level (#4717)
+  -:  -------- > 162:  d7ac57c9 build(deps): bump LizardByte/actions from 2026.212.22356 to 2026.214.14019 in the lizardbyte-actions group across 1 directory (#4719)
+  -:  -------- > 163:  a038cc13 chore: update global workflows (#4725)
+  -:  -------- > 164:  24c5dfd6 fix(linux/xdgportal): stream scaling and mode change support (#4700)
+  -:  -------- > 165:  c9bcee44 fix(linux): fix touch misalignment for wlgrab on scaled outputs (#4665)
+  -:  -------- > 166:  4913b673 fix(gh-pages): style fixes for theme switcher (#4748)
+  -:  -------- > 167:  00a52bb9 build(deps): bump third-party/moonlight-common-c from `6250fa2` to `b187204` (#4751)
+  -:  -------- > 168:  95da4b5c feat(linux/xdgportal): implement reactive capture with duplicate detection (#4740)
+  -:  -------- > 169:  502be646 fix(linux/kmsgrab): fix handle leak in update_cursor (#4757)
+  -:  -------- > 170:  2fb7e6eb build(deps): bump LizardByte/build-deps (#4761)
+  -:  -------- > 171:  1cb39b2a build(deps): bump third-party/moonlight-common-c from `b187204` to `3fa9191` (#4755)
+  -:  -------- > 172:  6e48e080 build(deps): bump lucide-vue-next from 0.563.0 to 0.575.0 (#4752)
+  -:  -------- > 173:  6ac1491a build(deps): bump packaging/linux/flatpak/deps/shared-modules from `3d87a66` to `55a86b3` (#4741)
+  -:  -------- > 174:  381fff0c build(deps): bump marked from 17.0.2 to 17.0.3 (#4744)
+  -:  -------- > 175:  c7bca414 build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `216a52e` to `4d5e760` (#4766)
+  -:  -------- > 176:  fbb8520a fix: replace remaining FontAwesome icons and drop shared-web dependency (#4764)
+  -:  -------- > 177:  766473f6 build(python): migrate to pyproject.toml and bump python to 3.14 (#4772)
+  -:  -------- > 178:  2620019b docs: add maintainer release instructions (#4773)
+  -:  -------- > 179:  57f8a2a4 build(deps): bump third-party/moonlight-common-c from `3fa9191` to `6268780` (#4765)
+  -:  -------- > 180:  13ca0d3e build(deps): bump vue from 3.5.28 to 3.5.29 (#4767)
+  -:  -------- > 181:  0e8bfbc3 chore(github): add Qualcomm GPU option to bug report template (#4733)
+  -:  -------- > 182:  98dc2195 chore(l10n): update translations (#4698)
+  -:  -------- > 183:  83e8fcf1 build(deps): bump third-party/doxyconfig from `89c8ec9` to `ba47416` (#4778)
+  -:  -------- > 184:  5395a9a5 fix(linux/xdgportal): don't pass `external_only` argument to `eglQueryDmaBufModifiersEXT` (#4754)
+  -:  -------- > 185:  dad5039f build(deps-dev): bump vite from 6.3.6 to 6.4.1 in the dev-dependencies group (#4782)
+  -:  -------- > 186:  80103a5d build(deps): bump the github-actions group across 1 directory with 2 updates (#4783)
+  -:  -------- > 187:  2b7af211 refactor: replace macros with constexpr/consts (#4791)
+  -:  -------- > 188:  188f1e29 style(cpp): separate multiple variable declarations (#4795)
+  -:  -------- > 189:  d157bb1d build(deps): bump LizardByte/actions from 2026.214.14019 to 2026.227.200013 in the lizardbyte-actions group across 1 directory (#4789)
+  -:  -------- > 190:  5f8dab09 fix: struct ordering broken in 188f1e2959e44b4a463bf4dee616a5cbee6f3557 (#4802)
+  -:  -------- > 191:  fc001cd0 chore: update global workflows (#4807)
+  -:  -------- > 192:  fdd1b97a build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `4d5e760` to `5de4612` (#4808)
+  -:  -------- > 193:  5d219c7a build(deps): bump packaging/linux/flatpak/deps/shared-modules from `55a86b3` to `fc11224` (#4809)
+  -:  -------- > 194:  655b1902 feat(web-ui): clipboard copy feedback on Troubleshooting logs (#4803)
+  -:  -------- > 195:  4e0a384f build(deps): bump vue3-simple-icons from 15.6.0 to 16.10.0 (#4804)
+  -:  -------- > 196:  b000d438 build(deps): bump lucide-vue-next from 0.575.0 to 0.576.0 (#4805)
+  -:  -------- > 197:  423a864e feat(macos): build a signed .app bundle in a .dmg (#4759)
+  -:  -------- > 198:  c710d03b build(deps): bump the github-actions group across 1 directory with 2 updates (#4810)
+  -:  -------- > 199:  a97ed29b build(deps-dev): bump serve from 14.2.5 to 14.2.6 in the dev-dependencies group (#4814)
+  -:  -------- > 200:  49abb160 fix(build): ensure libopus is statically linked (#4819)
+  -:  -------- > 201:  bfdafa5f build(fedora): fix rawhide build (#4821)
+  -:  -------- > 202:  53f05d48 fix(macos): hide the Dock icon (#4823)
+  -:  -------- > 203:  630c57ce fix(linux/portal): set env_width/env_height so touch input works (#4822)
+  -:  -------- > 204:  d61f5e44 build(deps): bump marked from 17.0.3 to 17.0.4 (#4817)
+  -:  -------- > 205:  1693876b build(deps): bump actions/setup-dotnet from 5.1.0 to 5.2.0 in the github-actions group across 1 directory (#4815)
+  -:  -------- > 206:  438b2391 ci(macOS): check notary status in separate job (#4820)
+  -:  -------- > 207:  c4c10a16 chore(l10n): update translations (#4793)
+  -:  -------- > 208:  e776b65b build(homebrew): dynamic link opus (#4826)
+  -:  -------- > 209:  76c3463d fix(linux/wlgrab): add frame_timestamp using wayland's ready timestamp (#4787)
+  -:  -------- > 210:  daa99db6 fix(linux): use FQDN naming for all Linux packaging types (#4779)
+  -:  -------- > 211:  3fbbe88b build(deps): bump lucide-vue-next from 0.576.0 to 0.577.0 (#4818)
+  -:  -------- > 212:  f04f6a2b refactor(confighttp): HTML page handlers into generic getPage function (#4645)
+  -:  -------- > 213:  7e3cf702 build(deps): move nvapi to official NVIDIA repo and bump to R590 (#3725)
+  -:  -------- > 214:  4c7df2dd build(deps): bump vue-i18n from 11.2.8 to 11.3.0 (#4828)
+  -:  -------- > 215:  60158b47 feat(linux/xdgportal): implement event-driven capture (#4768)
+  -:  -------- > 216:  977045cc build(windows): sign windows executables (#4829)
+  -:  -------- > 217:  ab1beed4 build(deps): bump vue from 3.5.29 to 3.5.30 (#4834)
+  -:  -------- > 218:  af44c534 chore(l10n): update translations (#4831)
+  -:  -------- > 219:  fc52fa3d fix(web-ui): add missing featured apps platform icons (#4837)
+  -:  -------- > 220:  c8b9bdbd ci(windows): disable signing for arm64 (#4838)
+  -:  -------- > 221:  b3f0e237 fix(linux/xdgportal): descriptor/pointer cleanups (#4840)
+  -:  -------- > 222:  e836354e feat(web-ui): add browse feature to find directories/executables/files (#4848)
+  -:  -------- > 223:  5b2bedd3 build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `5de4612` to `37eb3e5` (#4844)
+  -:  -------- > 224:  90bd1084 build(deps): bump actions/download-artifact from 8.0.0 to 8.0.1 in the github-actions group across 1 directory (#4842)
+  -:  -------- > 225:  8a30a54d chore(l10n): update translations (#4841)
+  -:  -------- > 226:  00fa2400 build(Fedora): Adjust version ranges for GCC selection (#4851)
+  -:  -------- > 227:  99d4e053 fix(linux/xdgportal): avoid duplicate frame insertion (#4839)
+  -:  -------- > 228:  f31bf6cd build(deps): bump vmactions/freebsd-vm from 1.4.2 to 1.4.3 (#4849)
+  -:  -------- > 229:  0bbaa2db build(deps): bump packaging/linux/flatpak/deps/shared-modules from `fc11224` to `a61b494` (#4850)
+  -:  -------- > 230:  ea201155 build(linux): generate glad sources at compile time (#4798)
+  -:  -------- > 231:  b5b905b2 build(deps): bump third-party/doxyconfig from `ba47416` to `a9f0c38` (#4853)
+  -:  -------- > 232:  1bd1b004 chore(i18n): clarify cmd notes (#4856)
+  -:  -------- > 233:  e2afac95 build(deps): bump third-party/inputtino from `504f0ab` to `73e9fa1` (#4860)
+  -:  -------- > 234:  ff33670c build(deps): bump third-party/glad from `dcc4f69` to `73db193` (#4858)
+  -:  -------- > 235:  253e624e fix(linux/xdgportal): allow unified systemd service for all capture methods (#4854)
+  -:  -------- > 236:  7a30ead4 feat(linux/keyboard): add F13-F24 keycodes (#4833)
+  -:  -------- > 237:  2a5901b2 build(deps): bump apple-actions/import-codesign-certs from 6.0.0 to 6.1.0 (#4864)
+  -:  -------- > 238:  04e9db4f build(deps): bump third-party/nv-codec-headers from `22441b5` to `fe32761` (#4866)
+  -:  -------- > 239:  f1931608 build(deps): bump actions/cache from 5.0.3 to 5.0.4 in the github-actions group across 1 directory (#4870)
+  -:  -------- > 240:  7a15a727 build(deps): bump codecov/codecov-action from 5.5.2 to 5.5.3 (#4871)
+  -:  -------- > 241:  7b364a89 build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `37eb3e5` to `cc1d7b8` (#4872)
+  -:  -------- > 242:  8de642ff build(deps): bump third-party/inputtino from `73e9fa1` to `f4ce2b0` (#4873)
+  -:  -------- > 243:  4bd461cf fix(linux): use FQDN service name in desktop launcher (#4874)
+  -:  -------- > 244:  a7ab814f fix(linux/xdgportal): portalgrab capture stability & mutter compatibility (#4875)
+  -:  -------- > 245:  0d3be0bb feat(macOS): Capture audio on macOS using Tap API (#4209)
+  -:  -------- > 246:  ae8adfd8 feat(linux/glad): implement EGL_IMG_context_priority (#4857)
+  -:  -------- > 247:  be2ccd77 build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `cc1d7b8` to `5c73dc4` (#4880)
+  -:  -------- > 248:  dda9a61c build(deps): bump marked from 17.0.4 to 17.0.5 (#4881)
+  -:  -------- > 249:  1a315244 build(deps): bump third-party/doxyconfig from `a9f0c38` to `334ad6a` (#4888)
+  -:  -------- > 250:  601ae387 build(deps): bump third-party/libdisplaydevice from `b46492b` to `fe7e6a8` (#4887)
+  -:  -------- > 251:  26d5c1e4 build(deps): bump packaging/linux/flatpak/deps/shared-modules from `a61b494` to `2f1fb18` (#4886)
+  -:  -------- > 252:  24b66fed fix(csrf): make errors more apparent (#4889)
+  -:  -------- > 253:  d6bc76e3 fix: clear tray icon when unpairing the last paired client (#4890)
+  -:  -------- > 254:  3e06afab feat(linux): add thread priority support for POSIX systems (#4885)
+  -:  -------- > 255:  7df35f40 build: fix build-deps tag matching (#4899)
+  -:  -------- > 256:  41707cff build(deps): bump third-party/tray from `4caf0d0` to `563dee4` (#4894)
+  -:  -------- > 257:  4126e18f build(deps): bump msys2/setup-msys2 from 2.30.0 to 2.31.0 (#4893)
+  -:  -------- > 258:  3723f457 build(deps): bump lucide-vue-next from 0.577.0 to 1.0.0 (#4905)
+  -:  -------- > 259:  3fb10a0d build(deps): bump azure/trusted-signing-action from 1.1.0 to 1.2.0 (#4903)
+  -:  -------- > 260:  d890faf1 build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `5c73dc4` to `caca92b` (#4910)
+  -:  -------- > 261:  1ee91636 build(deps): bump vue from 3.5.30 to 3.5.31 (#4911)
+  -:  -------- > 262:  16d0f3ae build(deps): bump LizardByte/actions from 2026.227.200013 to 2026.328.161128 in the lizardbyte-actions group across 1 directory (#4920)
+  -:  -------- > 263:  f6703a27 test(windows): fix display device tests with clang (#4921)
+  -:  -------- > 264:  994e2c3f chore: update global workflows (#4916)
+  -:  -------- > 265:  9cffd08f build(deps): bump codecov/codecov-action from 5.5.3 to 6.0.0 (#4913)
+  -:  -------- > 266:  aa607821 build: Allow FFMPEG_PLATFORM_LIBRARIES to be overridden by the user (#4915)
+  -:  -------- > 267:  72faa710 fix: restore stdin-based pairing (#4912)
+  -:  -------- > 268:  dc2dc61d build(deps): bump third-party/moonlight-common-c from `6268780` to `7022b33` (#4923)
+  -:  -------- > 269:  d0333469 feat(api/ui): add client enable/disable access control (#4771)
+  -:  -------- > 270:  4ef856ab fix(windows): update-path.bat registry command syntax in installer (#4902)
+  -:  -------- > 271:  356c6a2c build(deps): bump vmactions/freebsd-vm from 1.4.3 to 1.4.4 (#4928)
+  -:  -------- > 272:  0752f641 feat(linux): Add Vulkan video encoder (#4603)
+  -:  -------- > 273:  ce5b39bc build(deps): bump third-party/moonlight-common-c from `7022b33` to `7b026e7` (#4930)
+  -:  -------- > 274:  b172a980 build(deps): bump third-party/nvapi from `9296d67` to `9b181ea` (#4917)
+  -:  -------- > 275:  5fba591e chore: update global workflows (#4936)
+  -:  -------- > 276:  ba4db46a build(deps): bump vue from 3.5.31 to 3.5.32 (#4941)
+  -:  -------- > 277:  1e8afb0d build(deps): bump marked from 17.0.5 to 18.0.0 (#4957)
+  -:  -------- > 278:  4c202fea build(deps): bump vue-i18n from 11.3.0 to 11.3.1 (#4953)
+  -:  -------- > 279:  e61d9ba4 build(deps): bump packaging/linux/flatpak/deps/shared-modules from `2f1fb18` to `6ea20c8` (#4949)
+  -:  -------- > 280:  31b85802 fix: redact logging of sensitive config & CSRF validation (#4955)
+  -:  -------- > 281:  a4c253f3 fix(linux): correct "Pulseadio" typo in PulseAudio log messages (#4956)
+  -:  -------- > 282:  6c1612de fix(linux/vulkan): add 16-bit DRM format support for HDR DMA-BUF import (#4962)
+  -:  -------- > 283:  d3330d1c fix(linux/xdgportal): Properly support multiple screens by exposing pipewire streams as separate displays (#4931)
+  -:  -------- > 284:  379242ec fix(linux/postins): allow running on rpm-ostree environments (#4963)
+  -:  -------- > 285:  c9aa918b build(deps): bump actions/github-script from 8.0.0 to 9.0.0 (#4970)
+  -:  -------- > 286:  58d3c377 build(deps): bump vue-i18n from 11.3.1 to 11.3.2 (#4964)
+  -:  -------- > 287:  4ea331e5 fix(linux/xdgportal): Improve multi-monitor support and work around breaking kmsgrab (#4969)
+  -:  -------- > 288:  ba1f3bba chore: update global workflows (#4976)
+  -:  -------- > 289:  c08f6912 build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `caca92b` to `9d9ad80` (#4983)
+  -:  -------- > 290:  c786d73e build(deps): bump packaging/linux/flatpak/deps/shared-modules from `6ea20c8` to `b8236c7` (#4975)
+  -:  -------- > 291:  b6a3d6ac build(deps): bump peter-evans/create-pull-request from 8.1.0 to 8.1.1 (#4974)
+  -:  -------- > 292:  94137da8 build(deps): bump actions/upload-artifact from 7.0.0 to 7.0.1 (#4973)
+  -:  -------- > 293:  5a417079 fix(linux/xdgportal): Additional error handling and minor code improvements (#4979)
+  -:  -------- > 294:  43f973db feat(linux/vulkan): enable RADV low-latency Vulkan Video encoding (#4984)
+  -:  -------- > 295:  5364b008 build(deps-dev): bump vite from 6.4.1 to 6.4.2 (#4985)
+  -:  -------- > 296:  75a3bedf revert: "feat(linux/vulkan): enable RADV low-latency Vulkan Video encoding" (#4989)
+  -:  -------- > 297:  a16c070a chore: update global workflows (#4990)
+  -:  -------- > 298:  225c3e9e fix(linux/vulkan): encoder not working on NVIDIA GPUs (#4994)
+  -:  -------- > 299:  f74b877f chore(deps): update dependency @vitejs/plugin-vue to v6.0.6 (#4992)
+  -:  -------- > 300:  35273203 chore(deps): update actions/cache action to v5.0.5 (#4991)
+  -:  -------- > 301:  a40f27f3 fix(linux/vulkan): guard deprecated FFmpeg Vulkan queue lock/unlock (#5005)
+  -:  -------- > 302:  5053c1d2 chore(deps): update dependency setuptools to v81 (#5003)
+  -:  -------- > 303:  cd7c036d chore(deps): update lizardbyte/actions action to v2026.417.35446 (#5012)
+  -:  -------- > 304:  409e3528 chore(deps): update dependency marked to v18.0.1 (#5011)
+  -:  -------- > 305:  38146cf0 chore(deps): update vmactions/freebsd-vm action to v1.4.5 (#5001)
+  -:  -------- > 306:  42d20400 build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `9d9ad80` to `34ecf07` (#5015)
+  -:  -------- > 307:  bfc6c7f5 chore(deps): update msys2/setup-msys2 action to v2.31.1 (#5016)
+  -:  -------- > 308:  b3194859 chore(deps): update dependency @codecov/vite-plugin to v2 (#4996)
+  -:  -------- > 309:  32100783 fix(linux): auto-detect GPU with connected display for VAAPI and Vulkan (#4961)
+  -:  -------- > 310:  5ffa66ee refactor(linux/xdgportal): Split pipewire code into it's own file so it can be reused (#5008)
+  -:  -------- > 311:  7228c255 fix(rtsp): ignore clientRefreshRateX100 if more than 1% variance from framerate (#5027)
+  -:  -------- > 312:  44bf39be fix: Resolve minimum_fps_target related issues on all platforms (#4967)
+  -:  -------- > 313:  e180053e fix(linux/vulkan): remove deprecated FFmpeg Vulkan queue lock/unlock (#5031)
+  -:  -------- > 314:  a5af7907 feat(nvenc): support for split frame encoding on GPUs with 2+ nvenc blocks (#4892)
+  -:  -------- > 315:  e39dfb80 refactor(linux/xdgportal): Move elevated privilege check/drop to misc.cpp (#5026)
+  -:  -------- > 316:  eb45ea78 fix(linux/vulkan): change default rate control from VBR to CBR (#5032)
+  -:  -------- > 317:  300e48f4 chore(deps): update actions/setup-node action to v6.4.0 (#5033)
+  -:  -------- > 318:  e75e633e chore(deps): update dependency marked to v18.0.2 (#5022)
+  -:  -------- > 319:  baa1a919 build(deps): bump third-party/nv-codec-headers from `e844e5b` to `33a9ede` (#5035)
+  -:  -------- > 320:  d14ccf25 fix(linux): multi-GPU segfault + wlr GPU auto selection, DMA-BUF metadata planes and revert wlr vulkan support (#5030)
+  -:  -------- > 321:  f4ebfbb9 chore(deps): update apple-actions/import-codesign-certs action to v7 (#5037)
+  -:  -------- > 322:  293c1ed3 fix: touch scaling bug and initialize display variables as 0 (#4758)
+  -:  -------- > 323:  dca3e8ba fix(network): restore ExternalIP in server info response (#5043)
+  -:  -------- > 324:  47d4be79 chore(deps): update dependency vue to v3.5.33 (#5042)
+  -:  -------- > 325:  1ba440e8 fix(linux/pipewire): Fix absolute touchinput for multi-monitor (#5041)
+  -:  -------- > 326:  c4b30655 refactor(linux): remove leftovers from portalgrab -> pipewire split (#5039)
+  -:  -------- > 327:  5cf5e8c1 docs(readme): restructure feature compatibility tables (#5040)
+  -:  -------- > 328:  7a4c940e fix(linux/pipewire): calculate env_width/env_height from all displays for pipewire_display_t  (#5050)
+  -:  -------- > 329:  4164cd01 build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `34ecf07` to `e39e586` (#5052)
+  -:  -------- > 330:  a458b204 chore(deps): update dependency vue-i18n to v11.4.0 (#5048)
+  -:  -------- > 331:  2f00cb30 feat(linux/xdgportal): Simplify display matching logic (#5053)
+  -:  -------- > 332:  1fc88f8b build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `e39e586` to `50a0768` (#5055)
+  -:  -------- > 333:  747e2135 feat(linux/pipewire): Add support for pipewire stream selection by object serial (#5054)
+  -:  -------- > 334:  bdef150c build(deps): bump third-party/build-deps from `c08f69d` to `cd7d45a` (#5056)
+  -:  -------- > 335:  a90d3068 feat(capture/linux): add KWin direct screencast capture method (#5009)
+  -:  -------- > 336:  017ce496 feat(linux/pipewire): Handle HDR(Rec. 2020/SMPTE 2084 PQ) visuals (#5025)
+  -:  -------- > 337:  36095cd5 build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `50a0768` to `1895ec8` (#5073)
+  -:  -------- > 338:  4329e0ca build(deps): bump packaging/linux/flatpak/deps/shared-modules from `b8236c7` to `2dfad85` (#5070)
+  -:  -------- > 339:  5479a1a2 build(deps): bump third-party/wlr-protocols from `a741f0a` to `bf4fc79` (#5072)
+  -:  -------- > 340:  3cb82779 chore(deps): update dependency marked to v18.0.3 (#5068)
+  -:  -------- > 341:  dd30d055 feat(input): implement multiseat support and virtual device naming (#4954)
+  -:  -------- > 342:  ecba5c3c fix(linux): security: drop CAP_SYS_ADMIN when possible, retain CAP_SYS_NICE (#5075)
+  -:  -------- > 343:  a241c78c feat(linux/wlgrab): match output_name by xdg_output name (#5071)
+  -:  -------- > 344:  68dfcce1 build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `1895ec8` to `dda10aa` (#5077)
+  -:  -------- > 345:  8362d580 chore(deps): update dependency vue to v3.5.34 (#5078)
+  -:  -------- > 346:  0899b341 build(linux): add ubuntu 26.04 support (#5051)
+  -:  -------- > 347:  ecdb0346 build(linux): fix gcov detection for ArchLinux (#5081)
+  -:  -------- > 348:  bfae5de9 chore(deps): update dependency vue-i18n to v11.4.2 (#5080)
+  -:  -------- > 349:  888a6bb0 Merge commit from fork
+  -:  -------- > 350:  c6988fd7 build(web-ui): commit lock file (#5083)
+  -:  -------- > 351:  3d849168 fix: show actual bind address in Web UI log message (#4897)
+  -:  -------- > 352:  810783dc build(windows): Always setup Node.js in Windows CI (#5084)
+  -:  -------- > 353:  0db9f73e feat(nvenc): support intraRefresh for h264, add outputRecoveryPointSEI=1 to intra-refresh config for h264 and hevc (#5091)
+  -:  -------- > 354:  676d331b fix: building without the system tray enabled (#5092)
+  -:  -------- > 355:  16706721 build(deps): bump third-party/build-deps from `cd7d45a` to `d8b1d18` (#5097)
+  -:  -------- > 356:  bcdbe494 build(deps): bump packaging/linux/flatpak/deps/shared-modules from `2dfad85` to `8c3f3cf` (#5098)
+  -:  -------- > 357:  dfffc8a8 ci: remove moonlight discord release announcement (#5099)
+  -:  -------- > 358:  07099901 build(deps): Add SUNSHINE_SYSTEM_VULKAN_HEADERS option (#5103)
+  -:  -------- > 359:  f9d1aca7 build(macos): configure C++ standard and ICU root (#5101)
+  -:  -------- > 360:  44cca9a5 fix(macos): preserve modifier state in input events (#5102)
+  -:  -------- > 361:  71323d38 build(windows): drop unused boost-locale (#5116)
+  -:  -------- > 362:  71e4da40 ci(windows): add linkage check (#5118)
+  -:  -------- > 363:  91615e3f chore(deps): update azure/trusted-signing-action action to v2 (#5117)
+  -:  -------- > 364:  33bdb011 fix(macos): provide left/right identity for modifiers (#5115)
+  -:  -------- > 365:  0523cebd feat(web-ui): add logout (#5121)
+  -:  -------- > 366:  390b3945 build(deps): bump third-party/moonlight-common-c from `7b026e7` to `2600bea` (#5123)
+  -:  -------- > 367:  9362925b chore(deps): update dependency @vitejs/plugin-vue to v6.0.7 (#5122)
+  -:  -------- > 368:  a0f45056 build(deps): bump third-party/plasma-wayland-protocols from `18afc45` to `4c015e9` (#5124)
+  -:  -------- > 369:  0e66dd81 fix(linux/pipewire): Add 10-bit RGB formats with 2-bit Alpha to format_map (#5088)
+  -:  -------- > 370:  e72e6845 chore: update global workflows (#5126)
+  -:  -------- > 371:  2cd7ba35 fix(audio): fix install of Steam Streaming Speakers driver (#5125)
+  -:  -------- > 372:  62579a91 build(deps): bump third-party/doxyconfig from `334ad6a` to `e552f7c` (#5127)
+  -:  -------- > 373:  14ffa6fd build: bump freebsd version to 14.4 and build-deps to v2026.516.30821 (#5129)
+  -:  -------- > 374:  15eabb29 build(deps): bump third-party/inputtino from `f4ce2b0` to `b887f6a` (#5135)
+  -:  -------- > 375:  be18f2f3 fix(macos): scale remote scroll input using macOS scroll speed (#5133)
+  -:  -------- > 376:  1a3c6b41 chore(deps): update dependency vue-i18n to v11.4.3 (#5139)
+  -:  -------- > 377:  82a68ebc chore: fixes for release automation (#5142)
+  -:  -------- > 378:  9b680ab7 chore(deps): update dependency vue-i18n to v11.4.4 (#5143)
+  -:  -------- > 379:  aeaec0e4 chore(deps): update dependency date-fns to v4.2.1 (#5145)
+  -:  -------- > 380:  6d7740ce chore(deps): update codecov/codecov-action action to v6.0.1 (#5149)
+  -:  -------- > 381:  3a196379 fix(web): disconnect only the disabled client instead of all sessions (#5138)
+  -:  -------- > 382:  74686e8b chore(deps): update dependency marked to v18.0.4 (#5151)
+  -:  -------- > 383:  bd9da896 chore: rename copilot-instructions.md to AGENTS.md (#5156)
+  -:  -------- > 384:  2db7176f fix(Windows-installer): move ViGEmBus to ThirdParty group (#5157)
+  -:  -------- > 385:  3a69acef feat(rtsp): add option to limit packetsize for clients that cannot configure it (#5153)
+  -:  -------- > 386:  3a720151 feat(web-ui): Added Filtering & Searching to the Apps page (#5158)
+  -:  -------- > 387:  db63290c build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `dda10aa` to `ee65dc7` (#5155)
+  -:  -------- > 388:  493dcac5 chore(crowdin): set commit message (#5160)
+  -:  -------- > 389:  ccd09c10 chore(l10n): update translations (#5161)
+  -:  -------- > 390:  3c54d5ff fix(web): the packetsize upper limit is 65535 (#5167)
+  -:  -------- > 391:  7aada121 chore(l10n): update translations (#5162)
+  -:  -------- > 392:  24f922b9 chore(deps): update dependency date-fns to v4.3.0 (#5172)
+  -:  -------- > 393:  ade1fc10 build(deps): bump packaging/linux/flatpak/deps/flatpak-builder-tools from `ee65dc7` to `96e2fe8` (#5165)
+  -:  -------- > 394:  7822c1f3 chore(deps): update lizardbyte/actions action to v2026.522.121358 (#5173)
+  -:  -------- > 395:  68f67180 fix(web-ui): add documentation link and version-aware URLs (#5176)
+  -:  -------- > 396:  dab4b415 chore(deps): update lizardbyte/actions action to v2026.524.145234 (#5177)
+  -:  -------- > 397:  cda976f1 chore(deps): migrate from lucide-vue-next to @lucide/vue (#5179)
+  -:  -------- > 398:  2b7a891a chore(l10n): update translations (#5178)
+  -:  -------- > 399:  64f69d05 chore: Add CLion run configuration for 'sunshine' (#5181)
+  -:  -------- > 400:  0bc26a3f build(freebsd): fix npm install (#5182)
+  -:  -------- > 401:  dbce2291 fix(linux): migrate to qt tray (#4907)
+  -:  -------- > 402:  b91ace72 fix: explicitly check construct function error in thread_safe.h (#5184)
+  -:  -------- > 403:  d7e88da0 build(macos): quote SHOULD_SIGN env expansion in install script (#5185)
+  -:  -------- > 404:  81a84148 fix(macos/packaging): add NSLocalNetworkUsageDescription so Bonjour can register (#5186)
+  -:  -------- > 405:  87182c9e chore(l10n): update translations (#5193)
+  -:  -------- > 406:  3c7952b2 fix(linux/vulkan): preserve host aspect ratio in encoder output (#5130)
+  -:  -------- > 407:  3ee4144a fix(macos): drop max_ref_frames=1 for h264_videotoolbox and enable PARALLEL_ENCODING (#5200)
+  -:  -------- > 408:  ebd5d7b6 chore(deps): update dependency vue to v3.5.35 (#5204)
+  -:  -------- > 409:  06504eb6 chore(l10n): update translations (#5196)
+  -:  -------- > 410:  22d9aa3b build(Archlinux): Shallow clone dependent submodules (#5206)
+  -:  -------- > 411:  4c825027 chore(deps): update dependency @lucide/vue to v1.17.0 (#5210)
+  -:  -------- > 412:  ec2b30ef chore(deps): update actions/setup-dotnet action to v5.3.0 (#5208)
+  -:  -------- > 413:  1a6fb5f1 fix(linux/vulkan): Ensure RADV vulkan video encoding is enabled on newer versions of Mesa (#5211)
+  -:  -------- > 414:  a682ab07 fix(linux/kwin): retry init with fully dropped elevated privileges in case KWin is missing CAP_SYS_NICE on linux (#5212)
+  -:  -------- > 415:  3d9e6d24 feat(web-ui): Updated `Add` / `Edit` app form to use modals + new `Delete` App UI flow (#5166)
+  -:  -------- > 416:  7310bb73 chore(deps): bump wayland-protocols to 1.48 (#5219)
+  -:  -------- > 417:  8583328c chore(deps): update dependency date-fns to v4.4.0 (#5215)
+  -:  -------- > 418:  49f16952 chore(l10n): update translations (#5220)
+  -:  -------- > 419:  4e9e0d4c build(deps): bump third-party/tray from `6332649` to `df9af11` (#5221)
+  -:  -------- > 420:  0e351405 build(python): migrate to uv (#5222)
+  -:  -------- > 421:  7d234bfa build(homebrew): fix service install on linux (#5223)
+  -:  -------- > 422:  ae14f9b3 chore(gh-pages): remove unused jquery dependency (#5235)
+  -:  -------- > 423:  fe500199 docs(contributing): refresh clang-format guidance (#5233)
+  -:  -------- > 424:  3ef82bde chore(deps): update vmactions/freebsd-vm action to v1.4.6 (#5226)
+  -:  -------- > 425:  8975ed14 chore(l10n): update translations (#5229)
+  -:  -------- > 426:  86aabc4a chore(deps): update dependency bootstrap-icons to v1.13.1 (#5239)
+  -:  -------- > 427:  c0383029 chore(deps): update dependency vite to v6.4.3 (#5238)
+  -:  -------- > 428:  b56b80ca chore(deps): update official github actions to v6.0.3 (#5242)
+  -:  -------- > 429:  815a8351 chore(deps): update dependency simple-icons to v13 (#5243)
+  -:  -------- > 430:  1f0455cc chore(deps): update dependency simple-icons to v16 (#5248)
+  -:  -------- > 431:  98ee1d00 chore(deps): use lizardbyte-common for python helpers (#5250)
+  -:  -------- > 432:  da3e1df1 chore(deps): update lizardbyte/actions action to v2026.605.34721 (#5253)
+  -:  -------- > 433:  72bad87c chore(deps): update dependency marked to v18.0.5 (#5251)
+  -:  -------- > 434:  fa4fbbdd chore(deps): update astral-sh/setup-uv action to v8.2.0 (#5245)

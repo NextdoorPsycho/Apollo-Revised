@@ -532,7 +532,7 @@ const KeyCodeMap kKeyCodesMap[] = {
     auto output_name = display_device::map_output_name(config::video.output_name);
     // If output_name is set, try to find the display with that display id
     if (!output_name.empty()) {
-      uint32_t max_display = 32;
+      constexpr uint32_t max_display = 32;
       uint32_t display_count;
       CGDirectDisplayID displays[max_display];
       if (CGGetActiveDisplayList(max_display, displays, &display_count) != kCGErrorSuccess) {
