@@ -110,10 +110,12 @@ jobs:
           BRANCH: ${{ github.ref_name }}
         run: |
           chmod +x ./scripts/linux_build.sh
-          ./scripts/linux_build.sh --skip-cuda --ubuntu-test-repo --num-processors "$(nproc)" \
-            --publisher-name "SudoMaker" \
-            --publisher-website "https://www.sudomaker.com" \
-            --publisher-issue-url "https://github.com/ClassicOldSong/Apollo/issues"
+          # linux_build.sh long options that take a value require the = form (e.g. --num-processors=4).
+          ./scripts/linux_build.sh --skip-cuda --ubuntu-test-repo \
+            --num-processors="$(nproc)" \
+            --publisher-name="SudoMaker" \
+            --publisher-website="https://www.sudomaker.com" \
+            --publisher-issue-url="https://github.com/ClassicOldSong/Apollo/issues"
       - name: Collect package by commit
         run: |
           mkdir -p out
@@ -130,6 +132,8 @@ jobs:
     name: Windows (x64 installer)
     needs: version
     runs-on: windows-latest
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
     defaults:
       run:
         shell: msys2 {0}
@@ -144,31 +148,50 @@ jobs:
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-cmake
             mingw-w64-x86_64-ninja
+            mingw-w64-x86_64-ccache
             mingw-w64-x86_64-boost
             mingw-w64-x86_64-openssl
             mingw-w64-x86_64-curl
             mingw-w64-x86_64-miniupnpc
             mingw-w64-x86_64-opus
             mingw-w64-x86_64-nlohmann-json
+            mingw-w64-x86_64-minhook
             mingw-w64-x86_64-nodejs
             mingw-w64-x86_64-nsis
+
       - uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
-      - name: Configure & build
+
+      # Cache compiled objects across runs (ccache is fed via the compiler launcher below).
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.ccache
+          key: ccache-windows-mingw64-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            ccache-windows-mingw64-${{ github.ref_name }}-
+            ccache-windows-mingw64-
+
+      - name: Configure
         env:
           COMMIT: ${{ github.sha }}
           BRANCH: ${{ github.ref_name }}
         run: |
           cmake -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             -DSUNSHINE_ASSETS_DIR=assets \
             -DSUNSHINE_PUBLISHER_NAME=SudoMaker \
             -DSUNSHINE_PUBLISHER_WEBSITE=https://www.sudomaker.com \
             -DSUNSHINE_PUBLISHER_ISSUE_URL=https://github.com/ClassicOldSong/Apollo/issues \
             -DBUILD_TESTS=OFF
-          ninja -C build
+
+      - name: Build
+        run: ninja -C build
+
       - name: Package (CPack NSIS)
         run: |
           cd build
