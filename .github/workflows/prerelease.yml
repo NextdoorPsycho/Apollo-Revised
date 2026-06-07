@@ -154,6 +154,8 @@ jobs:
             mingw-w64-x86_64-curl
             mingw-w64-x86_64-miniupnpc
             mingw-w64-x86_64-opus
+            mingw-w64-x86_64-cppwinrt
+            mingw-w64-x86_64-libvpl
             mingw-w64-x86_64-nlohmann-json
             mingw-w64-x86_64-MinHook
             mingw-w64-x86_64-nodejs
