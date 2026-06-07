@@ -12,6 +12,11 @@
 #include <dxgi.h>
 #include <dxgi1_6.h>
 #include <Unknwn.h>
+// <coroutine> must be included before any <winrt/*> header: C++/WinRT only enables coroutine
+// support when __cpp_lib_coroutine is already defined (see cppwinrt strings/base_macros.h).
+// Upstream Sunshine gets this transitively via <boost/process/v1.hpp>, which this fork drops
+// before display.h (the WinSock/NTSTATUS workaround below), so include <coroutine> explicitly.
+#include <coroutine>
 #include <winrt/windows.graphics.capture.h>
 
 // local includes

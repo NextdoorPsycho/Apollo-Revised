@@ -8,6 +8,11 @@
 // Gross hack to work around MINGW-packages#22160
 #define ____FIReference_1_boolean_INTERFACE_DEFINED__
 
+// <coroutine> must precede the <winrt/*> headers so __cpp_lib_coroutine is defined and C++/WinRT
+// enables coroutine support (see cppwinrt strings/base_macros.h); this TU includes them directly
+// rather than via display.h.
+#include <coroutine>
+
 #include <Windows.Graphics.Capture.Interop.h>
 #include <winrt/windows.foundation.h>
 #include <winrt/windows.foundation.metadata.h>
